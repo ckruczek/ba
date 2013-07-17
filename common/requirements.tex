@@ -1,0 +1,27 @@
+\section{Einleitung}
+Moderne Betriebssysteme bestehen aus einer Vielzahl an Funktionen und bieten ein umfangreiches Portfolio an M\"oglichkeiten, jedoch muss bei der Entwicklung von Betriebssystemen im Embedded System Bereich darauf geachtet werden, nur die wichtigsten Komponenten zu implementieren und diese wom\"oglich noch hochperformant zu gestalten.\\
+In diesem Kapitel wird beschrieben, aus welchen Komponenten \mops besteht und welche Anforderungen im Rahmen der Bachelorarbeit an diese gesetzt wurden. Alle nun folgenden Punkte sind somit erfoderliche Kriterien f\"ur das System.
+\section{Startmechanismus}
+Der Startvorgang stellt in jedem Betriebssystem eine wichtige Rolle dar. Die M\"oglichkeiten bei \mops stellten sich hier, durch die Non-Existenz von Hardware, als begrenzt dar. Um diese Problematik zu l\"osen, wurde die Entwicklung in einen Emulator verlagert.
+Die g\"angigste Variante seinen Code zu testen, besteht darin eine Datei im passenden Format zu erzeugen und diese beim Start des Emulators zu \"ubergeben. \\
+Das bedeutet in unserem Fall, das s\"amtliche Dateien kompiliert und gelinkt werden m\"ussen.
+\section{Exceptionhandler}
+Ein Prozessor muss im Falle einer Exception, z.B. k\"onnen dies ein Reset des Prozessors, IRQ, FIQ, Prefetch Abort, Software Interrupt oder eine undefinierte Aktion sein, in der Lage sein diese ad\"aquat zu behandeln. Die meist verwandte Vorgehensweise ist es eine Tabelle im Speicher zu definieren, die genau f\"ur diese Zwecke Routinen bereitstellt\parencite[53]{archManI}.\\ Tritt nun eine Exception auf, gibt es eine vordefinierte Reihenfolge an Aktionen, die der Prozessor ausf\"uhrt. Damit valide Routinen zur Behandlung der Exceptions immer in dieser Tabelle stehen, muss jene w\"ahrend der Initialisierung des Systems angelegt werden.
+\section{Vectored Interrupt Controllor}
+Die korrekte Behandlung von sowohl Interrupt Requests(IRQ) als auch Fast Interrupt Requests(FIQ) stellen eine wichtige Rolle in Betriebssystemen dar.\\
+Hier gibt es zwei unterschiedliche Mechanismen IRQ/FIQ's zu behandeln:
+
+\begin{description}
+	\item[Non-Vectored Controller] - Diese Systeme m\"ussen wissen, woher der Request kommt und wo die Routine zur Behandlung des Requests liegt.
+	\item[Vectored Interrupt Controller] - Diese Controller vereinen beide oben genannten Fakten, denn sie werden initial mit den Priorit\"aten der Requests und den zugeh\"origen Routinen gef\"ullt und k\"onnen dann zur Laufzeit die passende Routine direkt zur\"uckgeben.
+\end{description}
+Bei \mops fiel die Entscheidung darauf, die 2. Variante, den Vectored Interrupt Controller, zu implementieren. Die Vorteile werden noch genauer erl\"autert.
+\section{Timer}
+Timer nehmen in Betriebssystemen eine wichtige Rolle ein. Ihr Hauptzweck ist die periodische Behandlung von Ereignissen und das ansteuern des Schedulers. \\
+Der ARM926 stellt vier Timer zur Verf\"ugung, welche sich auf unterschiedlichste Art und Wei\ss e konfigurieren lassen. Die verf\"ugbaren Timer sind hier mit \textit{Timer0 - Timer3} zu benennen\parencite[vgl.][262]{archManI}. Da es f\"ur \mops ausreicht nur auf einen Timer zur\"uck zu greifen wird sp\"ater nur noch von \textit{Timer0} die Rede sein.
+\section{Serielle Schnittstelle}
+Die M\"oglichkeit ein Feedback von \mops zu bekommen ist ein weiterer wichtiger Bestandteil des Betriebssystem. Der ARM926EJ-S stellt den sogenannten \textit{Universal Asynchronous Receiver Transmitter} zur Verf\"ugung. Diese Komponente ist nichts weiter als eine serielle Schnittstelle die sowohl Daten\"ubertragung auf den Monitor als auch Datenempfang von der Tastatur erm\"oglicht. Im weiteren Verlauf wird diese Schnittstelle mit dem Namen \textit{UART0} erw\"ahnt.
+\section{Kernel}
+Der Kernel ist der speicherresistende Teil und das Herzst\"uck eines jeden Betriebssystems, es kontrolliert alle oben beschriebenen Bestandteile und stellt Funktionen f\"ur den Zugriff auf Kernel-Methoden bereit. Eine noch viel wichtigere Funktion, die der Kernel \"ubernimmt, ist die Umschaltung und Generierung von Prozessen. 
+
+

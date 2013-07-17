@@ -1,0 +1,55 @@
+\pagestyle{fancyplain}
+
+\newcounter{vicCounter}
+\setcounter{vicCounter}{1}
+\newcommand{\mytitle}{Entwicklung eines Minibetriebssystem auf Basis eines ARM926 Prozessors}
+\newcommand{\mops}{\textbf{\textit{{\large M}\textsc{op}{\large S} }}}
+\newcommand{\me}{Christopher \textsc{Kruczek}}
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\footrulewidth}{1.5pt}
+\renewcommand{\arraystretch}{1.5}
+
+\lhead[\fancyplain{}{\leftmark}]         {\fancyplain{}{\leftmark}}
+\rhead[\fancyplain{}{\rightmark}]       {\fancyplain{}{\rightmark}}
+\cfoot[\fancyplain{\thepage}]  {\fancyplain{\thepage}{\thepage}}
+
+% Bjornstrup chapter formating
+\ChNumVar{\fontsize{76}{80}\usefont{OT1}{pzc}{m}{n}\selectfont}
+\ChTitleVar{\raggedright\Huge\bf}
+
+\renewcommand\lstlistlistingname{Quellcode-Ausschnitte}
+
+%==============================================================================
+%																		Listings
+%==============================================================================
+\definecolor{cred}{rgb}{0.6,0,0} % for strings
+\definecolor{cgreen}{rgb}{0.25,0.5,0.35} % comments
+\definecolor{background}{RGB}{242,242,242}
+\definecolor{cpurple}{rgb}{0.5,0,0.35} % keywords
+\definecolor{cdocblue}{rgb}{0.25,0.35,0.75} % c doc
+
+\RequirePackage{listings} 
+
+\lstset{language=C} 
+\lstset{keywordstyle=\color{cpurple}\bfseries} 
+\lstset{breaklines=true} 
+\lstset{basicstyle=\scriptsize\ttfamily}%\ttfamily\fontsize{10}{10}} 
+\lstset{xleftmargin=5px}
+\lstset{tabsize=2}
+\lstset{frameround=ffff}
+\lstset{frame=single}
+\lstset{framerule=0.5pt}
+\lstset{backgroundcolor=\color{background}}
+\lstset{numbers=left}
+\lstset{showstringspaces=false}
+\lstset{stringstyle=\color{cred}}
+\lstset{commentstyle=\color{cgreen}}
+\lstset{morecomment=[s][\color{cdocblue}]{/**}{*/}}
+
+
+\renewcommand{\lstlistingname}{Code-Beispiel}
+\DefineBibliographyStrings{german}{%
+urlseen = {Letzter Zugriff},
+}

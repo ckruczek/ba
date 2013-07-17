@@ -1,0 +1,41 @@
+\section{Einleitung}
+Ohne  vern\"unftige Werkzeuge ist es nicht m\"oglich ein Betriebssystem oder eine andere Software zu entwickeln. Im folgenden wird beschrieben welche Werkzeuge bei der Entwicklung von \mops mit beteiligt waren und es wird ein kurzes Beispiel der Benutzung pr\"asentiert. F\"ur die Entwicklung von ARM-basierten Programmen wurde das Linux-Paket der GCC-Utils f\"ur ARM verwendet. 
+
+\subsection{arm-none-linux-gnueabi-as}
+Das Fundament eines Betriebssystems besteht zu einem gro\ss en Teil aus Assembler Code, so ist es auch bei \mops. Damit dieser Code auch \"ubersetzt werden kann bedarf es einen Assembler. Dieser Assembler nennt sich \textit{arm-none-linux-gnugeabi-as}. Durch folgendes Kommando kann eine Assembler Datei gegen die ARM926 Architektur assembliert werden. \\
+
+\begin{lstlisting}[caption={ARM-Assembler mit Optionen f\"ur ARM926}]
+arm-none-linux-gnueabi-as -mcpu=arm926ej-s -g startup.s -o startup.o
+\end{lstlisting}
+
+\subsection{arm-none-linux-gnueabi-gcc}
+Neben Assembler spielt nat\"urlich auch C eine wichtige Rolle in Betriebssystemen. So muss man mit dem GCC vorhanden .c Dateien auf folgende Weise kompilieren. 
+\begin{lstlisting}[caption={C/C++ Compiler}]
+arm-none-linux-gnueabi-gcc std=c99 -mcpu=arm92ej-s -c -g file.c -o file.o
+\end{lstlisting}
+\subsection{arm-none-linux-gnueabi-ld}
+Die Schritte des Assembler und Kompilieren reichen jedoch nicht um eine zusammenh\"angende Datei f\"ur den \textit{qemu} zu erstellen. Dazu ist es noch notwendig alle Informationen zusammen zu linken. Das geschieht mit folgenden Kommando:
+
+\begin{lstlisting}[caption={Linker mit Link-File 'link.ld'}]
+arm-none-linux-gnueabi-ld -T link.ld first.o second.o -o mops.elf
+\end{lstlisting}
+Nun stellt sich die Frage nach welchen Regeln die Dateien verlinkt werden, an welchen stellen im RAM welche Informationen stehen und wo z.B. die Stackpointer oder andere wichtige Informationen gesetzt werden. Diese Informationen erh\"alt der Linker aus einem \textbf{Linkfile}.
+\subsection{arm-none-linux-gnueabi-objcopy}
+\label{tools:copy}
+Dieses Werkzeug stammt ebenfalls aus den GCC-Utils und dient hat den Zweck, Informationen als Binar-Dump aus einer .o Datei zu extrahieren. Hierbei ist es m\"oglich spezielle Sektionen zu kopieren, wie die Sektionen wo der Code lokalisiert ist. Dieses Tool ist weiterhin so konfigurierbar das s\"amtliche Informationen wie Relocationtabelle und/oder Symboltabelle entfernt oder mit \"ubernommen werden k\"onnen. Mehr M\"oglichkeiten sind hier nicht zu erw\"ahnen da ausschliesslich die vorherigen genannten f\"ur die Bachelorarbeit relevant waren. Die Benutzung ist ebenfalls sehr simpel:
+\begin{lstlisting}[caption={Objektkopie in Bin\"arformat}]
+arm-none-linux-gnueabi-objcopy -O binary -S mops.elf mops.bin
+\end{lstlisting}
+
+\subsection{arm-none-linux-gnueabi-objdump}
+Dieses Tool stellt ein Interface bereit um spezifische Informationen einer Objektdatei auszugeben. Diese Informationen sind z.B. Sektionen, Symboltabellen, Relocationeintr\"age, Debuggingeintr\"age (sofern man jene mit einkompiliert hat) sowie die Disassemblie von ganzen Sektionen. Diese Informationen k\"onnen sehr hilfreich sein wenn es darum geht den generierten Assembler Code oder die Sektionen zu analysieren. Beispielsweise kann die Information \"uber die Code-Sektion einer Objektdatei \"uber folgenden Aufruf generiert werden:
+\begin{lstlisting}[caption={Objdump einer Objektdatei}]
+arm-none-linux-gnueabi-objdump -d object.o
+\end{lstlisting}
+\subsection{make}
+\textit{make} ist ein weitverbreitetes und bekanntes Programm zur Erstellung und zum Management von Build-Prozessen. Neben den ganzen obigen genannten Werkzeugen ist es jedoch notwendig das diese Prozesse zusammengefasst werden. Da bei der Entwicklung nicht immer nur eine Datei an dem Prozess beteiligt ist sondern mehrere ist es wichtig ein Mechanismus zu finden der das Assemblieren, Kompilieren, Linken und die Objektkopie zusammenfasst und sich mit einem Kommando ausf\"uhren l\"asst. Hier kommt \textit{make} ins Spiel. Als ein Regelbasiertes System k\"onnen Regeln und Abh\"angigkeiten definiert werden unter denen die auszuf\"uhrenden Kommandos bestimmt werden. Einen kleinen Ausschnitt aus dem make-File des Projekts m\"ochte ich hier anbringen:
+\lstinputlisting[language=make,firstline=1,lastline=26,caption={make-File mit Hauptabh\"angigkeiten}]{mops/mops-master/Makefile}
+Klar zu erkennen sind die wiederverwendbaren Kommandos wie \textit{CC, AS, LD} usw. die dazu genutzt werden um zu assemblieren, kompilieren und zu linken. Neben diesen Kommandos gibt es noch Regeln um das Projekt komplett zu bauen und um alle unn\"otigen Objektdatei zu entfernen.
+\subsection{qemu}
+Neben einer Umgebung f\"ur die Entwicklung, war es auch notwendig den Code auszuf\"uhren. Da keine echte Hardware zur Verf\"ugung stand, auf welcher \mops getestet werden konnte, musste eine Emulationsumgebung benutzt werden, hier fiel die Wahl auf \textit{qemu}\footnote{\url{http://wiki.qemu.org/Main_Page}[Letzter Zugriff 25.06.2013]}. \textit{qemu} ist eine Open Source Software zur Emulation und Virtualisierung von Hardware und Ger\"aten. Die Entscheidung fuer \textit{qemu} viel aufgrund der weit verbreiteten Benutzung und durch die Unterst\"utzung der ARM-Prozessoren.
+ 

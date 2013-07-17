@@ -1,0 +1,73 @@
+\documentclass[fontsize=12pt]{scrreprt}
+\usepackage{setspace}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{lipsum}
+\usepackage[paper=a4paper,left=20mm,right=20mm,top=20mm,bottom=25mm]{geometry}
+\usepackage[Bjornstrup]{fncychap}
+
+\input{definitions.tex}
+
+\begin{document}
+
+\onehalfspacing
+
+\input{title.tex}
+
+\tableofcontents
+
+\chapter{Kurzbeschreibung}
+
+\section{Idee}
+W\"ahrend des Studiums zur Angewandten Informatik erhielt ich einen Einblick in die Entwicklung von Mikroprozessoren im Bereich der ZigBee Programmierung.
+Durch das Seminar ``Betriebssysteme und Netze'' entwickelte sich mehr und mehr das Interesse zur Betriebssystemprogrammierung. Diese beiden Aspekte wollte ich miteiander verbinden und unterhielt mich im 5. Semester mit meinem Dozenten fuer Betriebssystementwicklung, Prof. Dr. Messer,  und schilderte Ihm meine Idee. Er bot mir an, mich im Rahmen meiner Bachelorarbeit zu betreuen. Die Idee des \mops entstand. \mops bedeutet \textsc{Mini-Operating System} und soll ein Mini-Betriebssystem fuer einen ARM926 Prozessor werden.
+Das ganze Projekt soll in einem Simulator fuer diesen Prozessor entwickelt werden. Als Simulator ist hier der ARMulator geplant.\\
+Sofern es die Zeit zul\"asst, will ich das entwickelte System auf ein \textit{\href{http://wiki.gnublin.org/index.php/GNUBLIN-Standard}{Gnublin-Board}} portieren. Dieses Board ist mit einem solchen Prozessor ausgestattet.\\ 
+Ziel soll es sein, ein System zu entwickeln, das Booten, eine Prozessverwaltung und eine einfache Ein- und Ausgabe zur Verf\"ugung stellen kann.\\
+Daraus resultieren folgende Komponenten:
+\begin{enumerate}
+	\item Bootloader
+	\item Kernel
+	\item Scheduler inklusive Timer
+	\item Ein- und Ausgabe
+\end{enumerate} 
+\newpage
+\noindent
+Diese Komponenten werden wahlweise in Assembler oder C, je nach Anwendungsfall, programmiert.\\
+Um den Schwierigkeitsgrad zu erh\"ahen gibt es zwei m\"ogliche Zusatzszenarien:
+\begin{description}
+	\item[Mini-Game] Integration eines kleinen text-basierten Spiels von Prof. Dr. Messer, was eine kleine Ein- und Ausgabe erfordern wuerde.
+	\item[Echtzeit-Scheduling] Implementierung eines Echtzeit-Schedulers der von Außen durch Interrupts getriggert werden kann und garantierte Reaktionszeiten aufweißt.
+\end{description}
+Da ich mir hier noch nicht sicher bin welche der beiden Varianten ich umsetzen will, kann ich mich deshalb im Exposé noch nicht festlegen.
+
+\chapter{Grobgliederung}
+
+\begin{enumerate}
+	\item Einleitung
+	\item Vorstellung ARM926 Prozessor
+	\item Anforderungskatalog
+	\item Entwurf
+	\item Implementierung
+		\begin{enumerate}
+			\item Booten
+			\item MMU
+			\item Prozessverwaltung
+		\end{enumerate}
+	\item Fazit
+		\begin{enumerate}
+			\item Was nicht geht
+			\item Pers\"onliches
+		\end{enumerate}		
+	\item Literatur
+	\item Verzeichnisse
+	\item Anhang
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,60 @@
+\documentclass[fontsize=12pt,paper=A4,pagesize,DIV=calc,BCOR=1cm]{scrreprt}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{pifont}
+\usepackage[babel,german=guillemets]{csquotes}
+\usepackage[backend=biber,style=alphabetic,bibstyle=alphabetic, block=space, url=true]{biblatex}
+\addbibresource{references.bib}
+\usepackage[paper=a4paper,left=25mm,right=10mm,top=20mm,bottom=25mm]{geometry}
+\usepackage[Bjornstrup]{fncychap}
+\usepackage{listings} 
+\normalfont
+
+\input{definitions.tex}
+
+
+\begin{document}
+
+\onehalfspacing
+
+\input{title.tex}
+% just force a empty page after the titlepage
+\newpage
+\thispagestyle{empty}
+\mbox{}
+
+\tableofcontents
+\listoffigures
+\lstlistoflistings
+\chapter{Einleitung}
+\input{introduction/introduction.tex}
+\chapter{Werkzeuge}
+\input{common/tools.tex}
+\chapter{Vorstellung ARM926EJ-S Prozessor}
+\input{introduction/processor.tex}
+\chapter{Anforderungskatalog}
+\input{common/requirements.tex}
+\chapter{Entwurf}
+\input{common/draft.tex}
+\chapter{Implementation}
+\input{common/implementation.tex}
+\chapter{Fazit}
+\input{common/fazit.tex}
+
+\printbibliography[heading=bibintoc]
+
+\appendix
+\addcontentsline{toc}{chapter}{Anhang}
+\chapter{Implementation}
+\section{RAM-Disk Maker}
+\lstinputlisting[language=C,label={appendix:ramdiskMaker},caption={RAM-Disk Maker}]{mops/mops-master/ramdiskMaker.c}
+
+\end{document}
