@@ -1,0 +1,63 @@
+-osek - konventionen (automobilindustrie)
+-entscheidung ob simulator oder nackte hardware
+-mops(mini operating system) oder opst(operatingsystem)
+-variante 1: simulator nutzen um den booter zu starten, bei gnublin schauen
+-prozessor kennenlernen
+	- register kennen lernen
+	- Nachschauen ob ARM7/9 eine MMU hat und kennen lernen
+	- I/O Geraete nachschauen
+-gcc fuer arm nachschauen.
+-30-40 c Programme 4-5 zeilen, lokale variable schreiben(int,byte), lesen, for-schleife und ASM code anschauen; Stackpointer verstehen.
+-booter in ASM schreiben, continue, disable-interupt.
+-'Moderne Realzeitsystem kompakt' - ISBN 978-3-89864-830-1
+--------------
+Entwurf:
+Contextswitch,Interrupthandler,Speicherverwaltung,Treiber
+--------------
+Expose:
+-es geht um die ARM-Prozessoren(Begruendung: Handys), aktuelle Hardware
+-implementation im Simulator und vorfuehrung im simulator, wird aber eine portierung auf echte hardware geben, z.B. Gnublin...
+- es geht um den kern eines Betriebssystem, Prozessverwaltung, Synchronisation, Speicherverwaltung, 
+- nur ein Prozessor
+- I/O Geraete werden nur Tastatur unterstuetzt
+- Scheduling -> Verweis auf das Buch von oben
+
+01.03.2013
+ 26 I:
+ 27 - vollstaendige Dokumentation von dem ARM9 Prozessor bei Gnublin nachschauen
+ 28 - Interrupts, wie werden diese Signalisiert
+ 29 - eine Routine die ich in Assembler schreibe und in C Aufrufen kann
+ 30 - Speicherverwaltung
+ 31 - I/O - einfachstes Beispiel waere eine Schnittstelle zur Tastatur und zum Bildschirm.
+ 32 - Loader-Formate
+ 33 II:
+ 34 - Auf Papier ein Entwurf des 'Mops'`
+ 35     - Scheduler -> Kernelmodus(Thread)
+ 36     - Prozessumschaltung von einem Thread zum anderen
+ 37     - Implementierung von CPU-Status retten und wiederherstellen
+ 38     - In den Kernel raus und wieder raus
+ 39 
+ 40     - Speicherverwaltung(first-fitt)
+ 41     - malloc und free
+ 42 
+ 43     - Wechselseitiger Ausschluss
+ 44     - Semaphoren
+ 45     - Disable Interrupt
+ 46 
+ 47     - Interrupts(geschachtelte Interrupthandler)
+ 48     - Lock und Unlock
+ 49 
+ 50     - Traps(Syscalls, Read, Write, Exit)
+ 51     - Echte Exceptions(Division durch 0)
+ 52     - Alle MMU-Traps
+ 53 III:
+ 54 - Was unterscheidet einen Realtime-Scheduler von einem Normalen Scheduler(Buch dazu lesen)
+
+
+04.04.2013
+- scheduler in C schreiben und ohne armulator testen
+- prozessverwaltung, malloc selbst schreiben, entweder neu schreiben oder implementation benutzen von GCC
+- so viel wie moeglich ausserhalb des ARM testen wenn moeglich
+- booter anschauen wie das andere leute machen.
+- dann einfache write funktion schreiben und einen charakter ausprinten
+- technical manual nur bis chapter 4 lesen.

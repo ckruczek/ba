@@ -15,3 +15,14 @@
 *.exe
 *.out
 *.app
+
+# latex stuff
+*.aux
+*.bbl
+*.blg
+*.lof
+*.log
+*.lol
+*.out
+*.tex
+
