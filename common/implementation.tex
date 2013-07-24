@@ -90,7 +90,7 @@ Das oben genannte Tool kann nun wie folgt benutzt werden um eine bin\"are Kopie 
 arm-none-linux-gnueabi-objdump -O binary -S klaus.c klaus.bin
 \end{lstlisting}
 Schaut man sich nun die Datei im Hex-Editor an, so erh\"alt man folgende Ausgabe:
-\lstinputlisting[language=C,caption={Bin\"ar Kopie vom Beispielprogramm}]{mops/mops-master/klaus.bin}
+\lstinputlisting[language=C,caption={Bin\"ar Kopie vom Beispielprogramm}]{mops/mops-master/klaus.bin.hex}
 Diese Hex-Code ist f\"ur \mops relevant, denn diese Codes sind exakt die Assembler-Codes die der Assembler generiert. Da es auf dauer sehr umfangreich gewurden w\"are diese Codes per Hand rauszuschreiben musste also ein Weg entwickelt werden um dies automatisiert zu machen.
 \subsection{RAM-Disk}
 Die RAM-Disk ist der Ausgangspunkt der Prozesse in \mops. Sie wird nach Start des Systems in den Kernel-Heap geladen und ab dann k\"onnen die Prozesse im System hochgefahren werden. Jedoch stellte sich die Frage wie man diese RAM-Disk erstellt. Zuvor wurde gekl\"art wie man an den Assembler-Code jedes Prozesse ran kommt. Nun muss dieser Code auch noch im f\"ur \mops passenden Format geschrieben werden. Dazu wurde ein Programm definiert was die bin\"ar Dateien einliest und daraus eine Header-Datei und passende C-Datei erzeugt. Ein Beispiel f\"ur so eine Header und C-Datei sieht kann wie folgt aussehen:
@@ -115,7 +115,7 @@ Neben der Aufgabe dem Prozess die passenden Start-, End-, Stackpointer- und Prog
 \newpage
 \subsection{Prozess Generierung}
 All diese Schritte sind notwendig um einen Prozess zu generieren. Der n\"achste logische Schritt ist jetzt den Prozess ins Leben zu rufen. Das geschieht in der \textbf{ersten} Version \"uber folgende Assembler-Routine:
-\lstinputlisting[language={[x86masm]Assembler}, caption={Prozess Generierung}]{mops/mops-master/core/mops_continue.s}
+\lstinputlisting[language={[x86masm]Assembler}, caption={Prozess Generierung}]{mops/mops-master/core/mops_resume.s}
 Diese Methode bekommt die Adresse des zu startenden Prozess \"ubergeben und macht dann eine Reihe wichtiger Sachen:
 \begin{enumerate}
 	\item{Stackpointer des aktuellen Modus retten (Z. 9)}

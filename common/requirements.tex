@@ -1,13 +1,18 @@
 \section{Einleitung}
 Moderne Betriebssysteme bestehen aus einer Vielzahl an Funktionen und bieten ein umfangreiches Portfolio an M\"oglichkeiten, jedoch muss bei der Entwicklung von Betriebssystemen im Embedded System Bereich darauf geachtet werden, nur die wichtigsten Komponenten zu implementieren und diese wom\"oglich noch hochperformant zu gestalten.\\
-In diesem Kapitel wird beschrieben, aus welchen Komponenten \mops besteht und welche Anforderungen im Rahmen der Bachelorarbeit an diese gesetzt wurden. Alle nun folgenden Punkte sind somit erfoderliche Kriterien f\"ur das System.
-\section{Startmechanismus}
-Der Startvorgang stellt in jedem Betriebssystem eine wichtige Rolle dar. Die M\"oglichkeiten bei \mops stellten sich hier, durch die Non-Existenz von Hardware, als begrenzt dar. Um diese Problematik zu l\"osen, wurde die Entwicklung in einen Emulator verlagert.
-Die g\"angigste Variante seinen Code zu testen, besteht darin eine Datei im passenden Format zu erzeugen und diese beim Start des Emulators zu \"ubergeben. \\
-Das bedeutet in unserem Fall, das s\"amtliche Dateien kompiliert und gelinkt werden m\"ussen.
-\section{Exceptionhandler}
-Ein Prozessor muss im Falle einer Exception, z.B. k\"onnen dies ein Reset des Prozessors, IRQ, FIQ, Prefetch Abort, Software Interrupt oder eine undefinierte Aktion sein, in der Lage sein diese ad\"aquat zu behandeln. Die meist verwandte Vorgehensweise ist es eine Tabelle im Speicher zu definieren, die genau f\"ur diese Zwecke Routinen bereitstellt\parencite[53]{archManI}.\\ Tritt nun eine Exception auf, gibt es eine vordefinierte Reihenfolge an Aktionen, die der Prozessor ausf\"uhrt. Damit valide Routinen zur Behandlung der Exceptions immer in dieser Tabelle stehen, muss jene w\"ahrend der Initialisierung des Systems angelegt werden.
+In jedem Betriebssytem und auch in \mops gibt es verschiedene Stellen die eine Erkl\"arung und darausfolgend eine Entwicklung bedarfen. Auch in \mops gibt es einen Startmechanismus, viel mehr unter \textit{Booten} bekannt. Hier wurde jedoch begr\"undet der Begriff Startmechanismus gew\"ahlt da kein wirkliches 'hochfahren' statt findet.\\
+Des weiteren gibt es auch Interrupts und Quellen die Interrupts aussenden k\"onnen. \mops stellt in der aktuellen Fassung nur zwei Interruptquellen zur Verf\"ugung, zum einen den Timer und die Serielle-Schnittstelle(speziell die Tastatur). Diese Quellen k\"onnen normale und Fast Interrupt Requests aussenden. Je nach Interrupt Request gibt es unterschiedliche Behandlungsmethoden, die sogenannten Interrupthandler.Nat\"urlich gibt es auch unterschiedliche Herangehensweisen wie Interrupts behandelt werden k\"onnen, \mops erledigt diese Aufgabe mit einem Vectored Interrupt Controller.\\
+Neben diesen Faktoren gibt es aber auch weitere Mechanismen in einem Betriebssystem die auch \mops pr\"agen. Eines davon sind die Trap-Handler, also Methoden die von einer Trap-Instruktion aufgerufen werden und somit Kernel-Methoden benutzbar machen.\\
+Damit ist aber noch kein Betriebssystem funktionsfertig. Es fehlen noch zwei wichtige Mechanismen. Zum einen ist dass, das Threadmanagment also die Verwaltung von User-Programmen. Verwaltung ist hier der Oberbegriff f\"ur die Teilmechanismen des Ladens, Starten und der Wechsel zwischen den Threads.\\
+Da \mops voranging im Bereich der Handhelds eingesetzt werden soll ist es f\"ur die Arbeit nicht relevant eine MMU - Memory Managment Unit zu benutzen. F\"ur eine einwandfreie Threadverwaltung ist nat\"urlich auch ein funktionierendes Scheduling notwendig. F\"ur \mops wurde sich entschieden das Round-Robin Verfahren zu benutzen.
+%\section{Startmechanismus}
+%Der Startvorgang stellt in jedem Betriebssystem eine wichtige Rolle dar. Die M\"oglichkeiten bei \mops stellten sich hier, durch die Non-Existenz von Hardware, als begrenzt dar. Um diese Problematik zu l\"osen, wurde die Entwicklung in einen Emulator verlagert.
+%Die g\"angigste Variante seinen Code zu testen, besteht darin eine Datei im passenden Format zu erzeugen und diese beim Start des Emulators zu \"ubergeben. \\
+%Das bedeutet in unserem Fall, das s\"amtliche Dateien kompiliert und gelinkt werden m\"ussen.
+\section{Interruptquellen und Interrupthandler}
+Ein Prozessor muss im Falle eines Interrupts, z.B. ein Reset des Prozessors, IRQ, FIQ, Prefetch Abort, Software Interrupt oder eine undefinierte Aktion, in der Lage sein diese ad\"aquat zu behandeln. Die meist verwandte Vorgehensweise ist es eine Tabelle im Speicher zu definieren, die genau f\"ur diese Zwecke Routinen bereitstellt\parencite[53]{archManI}.\\ Tritt nun eine Interrupt auf, gibt es eine vordefinierte Reihenfolge an Aktionen, die der Prozessor ausf\"uhrt. Damit immer valide Routinen zur Behandlung der Interrupts in dieser Tabelle stehen, muss jene w\"ahrend der Initialisierung des Systems angelegt werden. Was \mops also ben\"otigt ist ein System zur Behandlung und Konfiguration von Interrupts und Interruptquellen.
 \section{Vectored Interrupt Controllor}
+Dieses System stellt ein Software Interface zum Interruptsystem des Prozessors dar. In Systemen mit klassischen Interrupt Controllern muss die Software sowohl die Herkunft des Interrupt Request, als auch die Interrupt Service Routine ermitteln. Diese Aufgabe \"ubernimmt der VIC nun komplett selbst\"andig.
 Die korrekte Behandlung von sowohl Interrupt Requests(IRQ) als auch Fast Interrupt Requests(FIQ) stellen eine wichtige Rolle in Betriebssystemen dar.\\
 Hier gibt es zwei unterschiedliche Mechanismen IRQ/FIQ's zu behandeln:
 
@@ -16,12 +21,20 @@ Hier gibt es zwei unterschiedliche Mechanismen IRQ/FIQ's zu behandeln:
 	\item[Vectored Interrupt Controller] - Diese Controller vereinen beide oben genannten Fakten, denn sie werden initial mit den Priorit\"aten der Requests und den zugeh\"origen Routinen gef\"ullt und k\"onnen dann zur Laufzeit die passende Routine direkt zur\"uckgeben.
 \end{description}
 Bei \mops fiel die Entscheidung darauf, die 2. Variante, den Vectored Interrupt Controller, zu implementieren. Die Vorteile werden noch genauer erl\"autert.
-\section{Timer}
-Timer nehmen in Betriebssystemen eine wichtige Rolle ein. Ihr Hauptzweck ist die periodische Behandlung von Ereignissen und das ansteuern des Schedulers. \\
+\section{Hardware}
+Im folgenden wird die Hardware definiert mit der \mops arbeitet. Zum einen sind das Timer und zum anderen die Serielle Schnittstelle.
+\subsection{Timer}
+Timer stellen wichtige Schl\"usselfaktoren in Betriebssystemen dar. Ihr Hauptzweck ist die periodische Behandlung von Ereignissen und das ansteuern des Schedulers. \\
 Der ARM926 stellt vier Timer zur Verf\"ugung, welche sich auf unterschiedlichste Art und Wei\ss e konfigurieren lassen. Die verf\"ugbaren Timer sind hier mit \textit{Timer0 - Timer3} zu benennen\parencite[vgl.][262]{archManI}. Da es f\"ur \mops ausreicht nur auf einen Timer zur\"uck zu greifen wird sp\"ater nur noch von \textit{Timer0} die Rede sein.
-\section{Serielle Schnittstelle}
-Die M\"oglichkeit ein Feedback von \mops zu bekommen ist ein weiterer wichtiger Bestandteil des Betriebssystem. Der ARM926EJ-S stellt den sogenannten \textit{Universal Asynchronous Receiver Transmitter} zur Verf\"ugung. Diese Komponente ist nichts weiter als eine serielle Schnittstelle die sowohl Daten\"ubertragung auf den Monitor als auch Datenempfang von der Tastatur erm\"oglicht. Im weiteren Verlauf wird diese Schnittstelle mit dem Namen \textit{UART0} erw\"ahnt.
-\section{Kernel}
-Der Kernel ist der speicherresistende Teil und das Herzst\"uck eines jeden Betriebssystems, es kontrolliert alle oben beschriebenen Bestandteile und stellt Funktionen f\"ur den Zugriff auf Kernel-Methoden bereit. Eine noch viel wichtigere Funktion, die der Kernel \"ubernimmt, ist die Umschaltung und Generierung von Prozessen. 
-
+\subsection{Serielle Schnittstelle - UART}
+Das \textit{Universal Asynchronous Receiver Transmitter} Interface bietet die M\"oglichkeit der seriellen Daten\"ubertragung auf Mikrocontroller. Mittels dieser Schnittstelle ist es unter anderem m\"oglich, die Tastatureingaben abzufragen und Daten auf dem Monitor anzuzeigen. \\
+Sicherlich gibt es hier noch speziell daf\"ur ausgelegte Ger\"ate, wie z.B \textit{KMI}, f\"ur Eingaben von der Tastatur oder das \textit{Character LCD Display}, um Daten auf dem Monitor darzustellen,  jedoch ist das UART Interface f\"ur diese Zwecke ausreichend. Im Folgenden findet ausschlie\ss lich die technische Bezeichnung \textit{UART0} Verwendung.
+\subsection{Speicher}
+Der Speicher von \mops soll als ein Ganzes betrachtet werden. Es gibt keine MMU und kein Swapping da keine Festplatte zur Verf\"ugung gibt.\\
+Die MMU, Memory Management Unit, spielt in vielen Betriebssystemen eine gro\ss e Rolle, da sie f\"ur die Virtuallisierung von Speicher zust\"andig ist und somit die M\"oglichkeit bietet Threads in getrennten Speicherbereichen zu kontrollieren. Aufgrund der Tatsache das in Embedded Systemen wie Handhelds fast nie MMU's existieren wird auch \mops darauf verzichten.\\
+Da keine Festplatte vorhanden ist und es nicht \"ublich ist in Handheld-Ger\"aten zu swappen, wird dieser Punkt auch ignoriert.
+\section{Threadmanagment}
+Eine weitere wichtige Anforderung an \mops ist die Verwaltung von Threads. Hierbei spielt es eine wichtige Rolle wie die Threads vorbereitet werden, wie sie geladen werden und wie der allgemeine Mechanismus des Umschalten zwischen den Threads stattfindet.\\
+Da eine Umschaltung nach gewissen Kriterien passieren musst ist es relevant einen Scheduler zu entwickeln. Da ein Scheduler auf verschiedene Art und Wei\ss en entwickelt werden kann wurde sich auf konservative Methode beschr\"ankt. Diese Methode nennt sich Round-Robin. Die Entscheidung diesen Mechanismus zu w\"ahlen fiel deshalb weil in Handheld-Ger\"aten keine hochrangigen Priorit\"aten wie in einem Echt-Zeit-System beachtet werden m\"ussen.\\ \\
+F\"ur \mops wurde definiert das es nur drei Threads maximal geben darf. Das sind Scheduler, und zwei User-Programme.
 

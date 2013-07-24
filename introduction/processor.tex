@@ -1,19 +1,41 @@
 \section{Einleitung}
-Die Firma ARM bietet eine breite Palette von Prozessoren, hierbei ist zu sagen das im Laufe der Zeit verschiedene Versionen, wie ARMv1-ARMv8, in Betrieb waren. \\
-Diese Bachelorarbeit bezieht sich jedoch auf eine spezielle ARM Version, der ARMv5 mit dem ARM926EJ-S Prozessor. In diesem Kapitel werden kurz die Komponenten f\"ur die Entwicklung von \mops vorgestellt. Der Prozessor bietet eine weitaus umfangreichere Architektur als sie im Rahmen der Bachelorarbeit ben\"otigt wird, weshalb nur wenige Bestandteile beleuchtet werden.
+Die Firma ARM bietet eine breite Palette von Prozessoren, hierbei ist zu sagen das im Laufe der Zeit verschiedene Versionen, wie ARMv1-ARMv8, in Betrieb waren. Diese Versionen beziehen sich nicht auf einen speziellen Prozessor sondern definieren eine Spezifikation auf deren Basis ein Prozessor, wie f\"ur diese Bachelorarbeit der ARM926EJ-S in der Version ARMv5. F\"ur die Bachelorarbeit wurde die ARMv5 gew\"ahlt weil diese Prozessoren in vielen Handheld verbaut werden und im gegenteil dazu die Rechenkraft eines ARMv7 nicht ben\"otigt wurde.
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+Version & Beispielprozessor & Beispielverwendung \\ \hline
+ARMv1 (1985) & ARM1 & BBC Master \\ \hline
+ARMv2 (1986) & ARM2, ARM3 & Acorn-Archimedes \\ \hline
+ARMv3 (1991) & ARM6, ARM7 & Apple Newton, RISC PC \\ \hline
+ARMv4 (1995) & ARM7TDMI, ARM8 & Gameboy Advanced, Nintendo DS \\ \hline
+ARMv5 (1997) & ARM7EJ, \textbf{ARM926EJ-S} & Palm Tungsten \\ \hline
+ARMv6 (2002) & ARM11, ARM-Cortex-M0 & nvidia, Texas Instruments \\ \hline
+ARMv7 (2004) & ARM-Cortex-M1 & nvidia, Texas Instruments  \\ \hline
+ARMv8 (2014) & ARM Cortex-A50 & Mobilefunktger\"ate, Tablets \\ \hline
+\end{tabular}\vspace{0.5cm}
+\footnotesize\textbf{Quelle:}\url{https://de.wikipedia.org/wiki/ARM-Architektur#Modelle},Letzter Aufruf: 24.07.2013
+\caption{Unterschiedliche ARM Versionen}
+\end{table}
+\newpage
 \section{RISC- vs CISC-Prozessoren}
 Der Begriff ARM bedeutet \textit{Advanced RISC Machine}. Hier muss jedoch ein weiterer Begriff herausgezogen werden, RISC. RISC bedeutet \textit{Reduced Instruction Set Computer}, der Begriff \textit{Reduced} bezieht sich jedoch nicht auf einen kleineren Instruktionssatz sondern mehr auf die Komplexit\"at der Instruktionen selbst. Die Instruktionen bei einer RISC Maschine sind wesentlicher einfacher als die einer CISC. So ist es deshalb m\"oglich das Chipdesign zu vereinfachen.. Durch das einfachere Chipdesign k\"onnen mehr Register auf den Chip gebracht werden und die Performance von Operationen ist h\"oher. Die Daten k\"onnen in  Register geladen und die Performanceintensiven Speicherzugriffe reduziert werden.\\\\
-Im Gegenteil dazu stehen die CISC Maschinen - \textit{Complex Instruction Set Computer}. Diese Familie der Computer ist die wohl am weitesten verbreitete Technologie am Markt. Chipdesigner wie Intel und AMD bauen zum gro\ss teil diese Architekturen. Ein CISC hat im Gegenteil zu einem RISC ein weitaus kleineren Instruktionssatz, aber daf\"ur ist die Komplexit\"at h\"oher. Dadurch wird erreicht das mit weniger Befehlen umfangreiche Operationen durchgef\"uhrt werden k\"onnen. Der Nachteil dabei ist jedoch das die Performance, der Befehlsausf\"uhrung, geringer als bei einem RISC ausfallen kann.\\
-\begin{tabular}[h!]{|p{4cm}|p{5cm}|p{5cm}|}
+Im Gegenteil dazu stehen die CISC Maschinen - \textit{Complex Instruction Set Computer}. Diese Familie der Computer ist die wohl am weitesten verbreitete Technologie am Markt. Chipdesigner wie Intel und AMD bauen zum gro\ss teil diese Architekturen. Ein CISC hat im Gegenteil zu einem RISC ein weitaus kleineren Instruktionssatz, aber daf\"ur ist die Komplexit\"at h\"oher. Dadurch wird erreicht das mit weniger Befehlen umfangreiche Operationen durchgef\"uhrt werden k\"onnen. Der Nachteil dabei ist jedoch das die Performance, der Befehlsausf\"uhrung, geringer als bei einem RISC ausfallen kann.\\\\
+\begin{table}[h!]
+\begin{tabular}[H]{|p{4cm}|p{6cm}|p{6cm}|}
 	\cline{1-3} 
 	& \textbf{RISC} & \textbf{CISC} \\ \hline 
 	\textbf{CPU Zyklen pro \newline Instruktion} & wenig Zyklen pro Instruktion & mehrere Zyklen \\ \hline
-	\textbf{Komplexit\"at der \newline Instruktionen} & wesentlich geringer & sehr hoch \\ \hline
+	\textbf{Komplexit\"at der \newline Instruktionen} & wesentlich geringer & hoch bis sehr hoch\\ \hline
 	\textbf{Umfang Instruktionssatz} & hoch & gering \\ \hline
-	\textbf{Instruktions-\newline geschwindigkeit} &  teilweise langsamer & schneller \\ \hline
+	\textbf{Instruktions-\newline geschwindigkeit} &  hoch bis sehr hoch & gering \\ \hline
 	\textbf{Verwendung}  & Smartphones, Tablets und andere Ger\"ate die wenig Energie verbrauchen sollen. & Computer \\ \hline	 
+	
 \end{tabular}
-\\\\
+\caption{Vergleich RISC vs. CISC}
+\end{table}
+\\
+\noindent
 Fazit dieses Vergleiches ist dass, beide Architekturen ihre Da-Seins Berechtigung in der aktuellen Technologischen Welt haben. Beide Versionen bringen Vor- und Nachteile mit sich, aber einen echten Gewinner gibt es in dem Spiel nicht. CISC machen sich viele Mechanismen der RISC zu nutze und n\"ahern sich ihnen so immer mehr an. Jedoch wird sich RISC niemals in der Welt der Heim-Computer durchsetzen aber immer Vorreiter im Bereich Embedded Systemen bleiben.
 \section{ARM926EJ-S}
 Betriebssysteme lassen sich auf jeder Prozessorarchitektur entwickeln die man sich vorstellen kann. Die Wahl auf den ARM926EJ-S fiel aufgrund diverser Recherchen. Aufgrund der Tatsache das es f\"ur die g\"angigen Intel und AMD Prozessoren bereits weitverbreitete Betriebssysteme gibt fiel die Wahl im vorhinein nicht auf diese Art.\\
@@ -24,34 +46,32 @@ Nach dem klar war wo ARM-Prozessoren eingesetzt werden, wie z.B. in Druckern, Ha
 	\item{\textbf{geringe Produktionskosten}}
 	\item{\textbf{minimale Bauweise.}}
 \end{dinglist}
-\newpage
 \section{Register}
 Der ARM926 Prozessor ist ein 32-Bit RISC Prozessor. Dieser Prozessor hat eine Gesamtzahl von 37 Registern\parencite[vgl.][44\psqq]{archManI}, wobei 30 dieser Register den allgemeinen Zwecken und 6 als Statusregister dienen. Von diesen hier explizit die Register \textbf{R0-R7} und \textbf{R13-R15} zu erw\"ahnen sind. \textbf{R0-R7} sind tats\"alich allgemein verwendbare Register, die unabh\"angig von dem aktuellen Prozessormodus sind, \textbf{R13} ist der \textit{Stackpointer}, \textbf{R14} stellt das \textit{Linkregister} dar und \textbf{R15} bezeichnet den \textit{Program Counter}.
 \begin{dinglist}{227}
 	\item{\textbf{Stackpointer}}\\
-	Zeigt auf die aktuelle Adresse des Stacks
+	Zeigt auf die 'Top-Of-Stack' Adresse
 	\item{\textbf{Linkregister}}\\
-	R\"ucksprungadressen von Unterfunktionen
+	Zeigt auf den aktuell geretteten Programmcounter bevor eine Routine betreten wird
 	\item{\textbf{Programmcounter}}\\
-	N\"achste Adresse im Programmablauf
+	Zeigt auf die n\"achste Instruktion
 \end{dinglist}
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.7]{common/register.png}\\
+\footnotesize\textbf{Quelle:}\parencite[43]{archManI}
+\caption{ARM926EJ-S Register}
+\end{figure}
 Teilweise sind die Register mehrfach vergeben, denn im ARM Prozessor gibt es unterschiedliche Prozessor-Modi und f\"ur ein gro\ss teil dieser Modi stellt der Prozessor f\"ur R13 und R14 neue Register zur Verf\"ugung. Das spielt dann eine wichtige Rolle wenn man unterschiedliche Stacks f\"ur die Modi aufbauen muss.
 \section{Prozessor Modus}
 Der ARM926EJ-S stellt sieben unterschiedliche Modi bereit in der sich der Prozessor befinden kann. Jeder dieser Modi kann man per Programmcode betreten oder durch eine Exception. 
 \begin{dinglist}{227}
-	\item{\textbf{User}}
-	\item{\textbf{FIQ(extra R8-R14) }}
-	\item{\textbf{IRQ(extra R13-R14)}}
-	\item{\textbf{Supervisor(extra R13-R14)}}
-	\item{\textbf{Abort(extra R13-R14)}}
-	\item{\textbf{Undefined(extra R13-R14)}}
-	\item{\textbf{System}}
+	\item{\textbf{User} \\ Das ist der Modus in dem alle Benutzerprogramme laufen. Sie haben keinen direkten Zugriff auf die Kernel-Routinen, sondern m\"ussen daf\"ur Trap-Instruktionen benutzen.}
+	\item{\textbf{FIQ(extra R8-R14) }\\ Dieser Modus wird nur von sehr wenigen Interrupts betreten. Das sind die Interrupts die eine sehr hohe Priorit\"at haben und umgehend von dem Prozessor behandelt werden m\"ussen.}
+	\item{\textbf{IRQ(extra R13-R14)}\\ Alle Standard Interrupts wie Tastatureingabe und andere die darauf konfiguriert werden, landen in diesem Modus. Routinen in diesem Modus k\"onnen in den User-Modus wechseln um User-Programme auszuf\"uhren.}
+	\item{\textbf{Supervisor(extra R13-R14)} \\ Dieser Modus ist ausschlie\ss lich f\"ur Trap-Routinen reserviert. Das bedeutet alle Instruktionen die von einem Userprogramm aufgerufen wurden um Kernel-Methoden auszuf\"uhren.}
+	\item{\textbf{Abort(extra R13-R14)}\\ Abort ist der Modus in den der Prozessor f\"allt wenn entweder eine Instruktion aufgrund eines Fehlers abgebrochen werden muss oder ein Fehler beim Abruf einer Speicherstelle auftritt.}
+	\item{\textbf{Undefined(extra R13-R14)}\\ Dieser Modus wird nur dann betreten sofern der ARM-Prozessor eine Instruktion von einem Co-Prozessor anfordert dieser aber nicht reagiert.}
+	\item{\textbf{System} \\ Dieser Modus ist nur f\"ur den Kernel und kein User-Programm darf diesen betreten.}
 \end{dinglist}
-Der System-Mode ist ein spezieller Modus. Dieser wird keiner Exception ausgel\"ost. Er ist deshalb vorhanden weil das Betriebssytem ihn benutzt um Betriebssytem relevante Resourcen zu benutzen. Weiterhin benutzt dieser Modus die gleichen Register wie der User-Modus
-\section{Vectored Interrupt Controller-Interface}
-Dieses System stellt ein Software Interface zum Interruptsystem des Prozessors dar. In Systemen mit klassischen Interrupt Controllern muss die Software sowohl die Herkunft des Interrupt Request, als auch die Interrupt Service Routine ermitteln. Diese Aufgabe \"ubernimmt der VIC nun komplett selbst\"andig.
-\section{Timer-Interface}
-Timer stellen wichtige Schl\"usselfaktoren in Betriebssystemen dar. Sie dienen dazu, Scheduler zu entwickeln und damit ein Prozessmanagment zu erm\"oglichen. Zur Verf\"ugung stehen vier Timer mit den Bezeichnungen \textit{Timer 0 - Timer 3}.
-\section{UART-Interface}
-Das \textit{Universal Asynchronous Receiver Transmitter} Interface bietet die M\"oglichkeit der seriellen Daten\"ubertragung auf Mikrocontroller. Mittels dieser Schnittstelle ist es m\"oglich, die Tastatureingaben abzufragen und Daten auf dem Monitor anzuzeigen. \\
-Sicherlich gibt es hier noch speziell daf\"ur ausgelegte Ger\"ate, wie z.B \textit{KMI}, f\"ur Eingaben von der Tastatur oder das \textit{Character LCD Display}, um Daten auf dem Monitor darzustellen.\\ Jedoch ist das UART Interface f\"ur diese Zwecke ausreichend. Im Folgenden findet ausschlie\ss lich die technische Bezeichnung \textit{UART0} Verwendung.
+Der System-Mode ist ein spezieller Modus. Dieser wird \"uber keinen Interrupt ausgel\"ost. Er ist deshalb vorhanden weil das Betriebssytem ihn benutzt um Betriebssytem relevante Resourcen zu benutzen. Weiterhin benutzt dieser Modus die gleichen Register wie der User-Modus.

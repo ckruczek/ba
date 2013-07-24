@@ -1,6 +1,6 @@
 \section{Einleitung}
 Die Entwicklung von \mops erfolgte in mehreren Schritten. Wichtige Zwischenstopps waren hier der Startprozess, die Exceptionhandler, der Interrupt-Controller, die Interrupt-Serviceroutinen und das Prozessmanangment. Jeder dieser Punkte bedurfte ein einzelne Entwurfsphase auf die jetzt genauer eingegangen werden.
-\section{E1 - Startmechanismus}
+\section{Startmechanismus}
 \label{e1:start}
 Der Startprozess unterteilt sich in drei Schritte:
 
@@ -13,9 +13,9 @@ Der Startprozess unterteilt sich in drei Schritte:
 	\begin{enumerate}
 		\item{\textbf{Startup-Code}}\\
 		 Der Emulator springt an die Adresse \texttt{0x000000}\footnote{\textit{Diese Adresse wird \"uber das Linker-Script bestimmt}}, an dieser Stelle steht die erste Assemblerroutine des Betriebssystems. Diese Routine dient dazu um gewisse Vorbedingungen zu erstellen. Eine davon ist die nachfolgende.
-		 \item{\textbf{Exception Handler}}\\
+		 \item{\textbf{Interrupt Handler}}\\
 		 \label{draft:exceptionHandler}
-			Exceptions k\"onnen von externen oder internen Ressourcen ausgel\"ost werden. Damit der Prozessor wei{\ss} wo er im Falle einer Exception hinspringen muss, schreibt ARM eine Struktur vor die eingehalten werden muss \parencite[vgl.][54]{archManI}. 
+Interrupts k\"onnen von externen oder internen Ressourcen ausgel\"ost werden. Damit der Prozessor wei{\ss} wo er im Falle eines Interrupts hinspringen muss, schreibt ARM eine Struktur vor die eingehalten werden muss \parencite[vgl.][54]{archManI}. 
 			\begin{figure}[h]
 				\centering
 					\includegraphics[scale=0.6]{common/exceptionhandler.pdf}
@@ -37,8 +37,8 @@ Neben der Erstellung der Sprungtabelle f\"ur die Exceptionhandler, ist es weiter
 		Jeder dieser vier Modi, bis auf den System-Modus, hat seinen eigenen Stackpointer und f\"ur jeden muss dementsprechend der passende Stackpointer gesetzt werden. Das ist deshalb notwendig da im Falle einer Exception der Prozessor in den jeweiligen Modus wechselt und wenn kein valider Stackpointer vorhanden ist kann es zu undefinierten Verhalten kommen. Die Gr\"o\ss e der Stackpointer l\"asst sich \"uber das Link-File bestimmen, f\"ur \mops wurde eine Gr\"o\ss e von 8KB je Modus gew\"ahlt.\\
 Sobald die Stacks alle initialisiert sind erfolgt der Sprung in die \texttt{main} Routine des Betriebssystem. Ab hier finden nun weitere Schritte statt um das System fertig zu initialisieren.
 	\end{enumerate}
-\section{E2 - Interrupt-Controller}
-Ein Interrupt-Controller stellt in einem Betriebssystem die Schnittstelle zwischen den Exceptions und dem System dar. Es gibt zwei Arten von Controllern:
+\section{Interrupt-Controller}
+Ein Interrupt-Controller stellt in einem Betriebssystem die Schnittstelle zwischen den Interrupts und der Hardware dar Er priorisiert die Interrupts, die von externen wie auch internen Quellen ausgel\"ost werden k\"onnen, und leitet sie an das Betriebssystem weiter. Es gibt zwei Arten von Controllern:
 \begin{dinglist}{227}
 	\item{Non-Vectored Interrupt-Controller}
 	\item{Vectored Interrupt-Controller}
@@ -74,7 +74,7 @@ Dieses Beispiel zeigt eine Beispielkonfiguration des Timerinterrupts. Um diesen 
 \end{dinglist}
 F\"ur den \textit{Timer0-Interrupt} muss an dieser Stelle das 4. Bit \parencite[vgl. Tabelle 4-40][227]{archManI} in dem Interrupt-Controller setzen. Das gilt sowohl f\"ur die Aktivierung, Auswahl des Interrupts als auch die Priorit\"at.
 
-\section{E3 - Interrupt-Service Routinen}
+\section{Interrupt-Service Routinen}
 Nachdem die Interrupts konfiguriert wurden ist es notwendig die Interrupt-Service Routinen der Interrupts zu definieren. Beispielhaft werden hier die Routinen des Timers und des UART0-Interrupts pr\"asentiert.
 \begin{figure}[H]
 	\begin{center}	
@@ -85,7 +85,7 @@ Nachdem die Interrupts konfiguriert wurden ist es notwendig die Interrupt-Servic
 \noindent
 Sobald der Interrupt ausgel\"ost wurde behandelt der Controller diesen und leitet es an die zugeh\"orige Routine zur Behandlung weiter. Im Beispiel des Timers, wird hier der Interrupt erst im Controller auf 'Behandelt' gesetzt und dann wird der Scheduler aufgerufen um dem n\"achsten Prozess zu starten. Das L\"oschen des Interrupts im Controller ist deshalb erforderlich, damit ein neuer Interrupt ausgel\"ost werden kann, denn nur nachdem der Interrupt als behandelt markiert wurde, kann ein neuer erzeugt werden. \\ In der aktuellem Implementation von \mops gibt es zwei Interrupts auf die reagiert wird. Zum einen ist das der \textit{Timer0}-Interrupt und zum anderen der Interrupt des \textit{UART0}-Interface. Bei Bedarf kann man auch noch weiter Interrupts definieren, dazu muss jedoch die Konfiguration des VIC abg\"andert werden.
 \newpage
-\section{E4 - Syscalls}
+\section{Syscalls}
 Neben den IRQ und FIQ spielen die Syscall-Interrupts auch noch eine sehr wichtige Rolle. Im Rahmen der ARM-Architektur wurden die Syscalls mit dem Namen \textit{Software Interrupts} bezeichnet. Sicherlich ist der Name Syscalls oder Traps gel\"aufiger. Um aber konsitent zu bleiben, wird im laufenden der Name Software Interrupt(SWI) verwendet.\\
 Ein SWI ist ein Interrupt der nicht im Kernel-Modus l\"auft aber Kernel-Routinen aufrufen darf. Das ist dann sinnvoll, wenn ein User-Programm Zugriff auf eine Kernel-Routine (wie das Schreiben auf die Konsole) ben\"otigt. Wie in Abbildung \ref{draft:excptionTable} zu erkennen ist, wird bei einem SWI-Interrupt die ARM\_swi Routine angsprungen. Diese Routine leitet den Interrupt-Request an eine weitere Komponente weiter die schematisch wie folgt aussieht.
 \begin{figure}[H]
@@ -96,8 +96,8 @@ Ein SWI ist ein Interrupt der nicht im Kernel-Modus l\"auft aber Kernel-Routinen
 \end{figure}
 \noindent
 In der aktuellen Fassung von \mops ist nur der SWI-Handler f\"ur den \texttt{Print\_Char}-SWI definiert, es sollen jedoch weitere folgen.
-\section{E5 - Prozessmanagment}
-\subsection{Prozesslayout}
+\section{Threadmanagment}
+\subsection{Threadlayout}
 Das Prozessmanagment spielt eine wichtige Rolle in jedem Betriebssystem. Aufgrund der Komplexit\"at und des zeitlichen Faktors wurde bei \mops auf ein rudiment\"areres System gesetzt. Ziel war es auch nicht das Prozessmanagment, im Einzelnen, zu beleuchten sondern die Gesamtheit eines Mini-Betriebssystem. Das bedeutet das keine Prozesse zur Laufzeit des Systems geladen werden k\"onnen sondern die Prozesse vor Beginn definiert werden mussten.\\
 Eine abstrakte Darstellung dieses Thread-Image kann man sich wie folgt vorstellen:
 \begin{figure}[H]
