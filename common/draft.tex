@@ -1,150 +1,79 @@
 \section{Einleitung}
-Die Entwicklung von \mops erfolgte in mehreren Schritten. Wichtige Zwischenstopps waren hier der Startprozess, die Exceptionhandler, der Interrupt-Controller, die Interrupt-Serviceroutinen und das Prozessmanangment. Jeder dieser Punkte bedurfte ein einzelne Entwurfsphase auf die jetzt genauer eingegangen werden.
-\section{Startmechanismus}
-\label{e1:start}
-Der Startprozess unterteilt sich in drei Schritte:
-
-	\begin{figure}[h]
-		\centering
-					\includegraphics[scale=0.60]{common/kernel-img.pdf}	
-		\caption{Kernel-Image Version 1}
-		\label{draft:kernelImage}
-	\end{figure}
-	\begin{enumerate}
-		\item{\textbf{Startup-Code}}\\
-		 Der Emulator springt an die Adresse \texttt{0x000000}\footnote{\textit{Diese Adresse wird \"uber das Linker-Script bestimmt}}, an dieser Stelle steht die erste Assemblerroutine des Betriebssystems. Diese Routine dient dazu um gewisse Vorbedingungen zu erstellen. Eine davon ist die nachfolgende.
-		 \item{\textbf{Interrupt Handler}}\\
-		 \label{draft:exceptionHandler}
-Interrupts k\"onnen von externen oder internen Ressourcen ausgel\"ost werden. Damit der Prozessor wei{\ss} wo er im Falle eines Interrupts hinspringen muss, schreibt ARM eine Struktur vor die eingehalten werden muss \parencite[vgl.][54]{archManI}. 
-			\begin{figure}[h]
-				\centering
-					\includegraphics[scale=0.6]{common/exceptionhandler.pdf}
-				\caption{Erzeugen der Sprungtabelle}
-				\label{draft:excptionTable}
-			\end{figure}\\
-			In diesem Schritt ist erkennbar, dass es zwei Tabelle gibt die von dem Programmierer erstellt werden m\"ussen. Die erste Tabelle enth\"alt Programm-Relative Adressen auf eine zweite Tabelle. In der zweiten Tabelle befinden sich dann die konkreten Adressen der Exceptionhandler. Neben der Exception f\"ur einen Reset des Systems gibt es noch weitere Exceptions wie die Undefined Operation (ARM\_undef), Softwareinterrupt (ARM\_swi), Prefetch-Abort (ARM\_pAbort), Data-Abort(ARM\_dAbort),  die Reserved Exception (ARM\_reserved) und ganz wichtig zu erw\"ahnen der IRQ (ARM\_irq und FIQ (ARM\_fiq).\\\\
-Der Vorteil des Mechanismus, Programmrelative Adresse anstatt die direkten Handler zu laden, besteht darin das man so leicht die Handler austauschen oder zus\"atzliche hinzuf\"ugen kann ohne dabei den Assemblercode zu \"andern.\\
-Neben der Erstellung der Sprungtabelle f\"ur die Exceptionhandler, ist es weiterhin notwendig den Stack f\"ur die jeweiligen Prozessormodi zu definieren, dies geschieht im n\"achsten Schritt.
-		\item{\textbf{Erstellung der Stacks mit anschlie\ss enden Sprung in main}}\\
-		\label{draft:stack}
-		Die f\"ur \mops relevanten Modi des Prozessors sind 
-		\begin{dinglist}{227}
-			\item{IRQ-Modus}
-			\item{FIQ-Modus}
-			\item{System-Modus}
-			\item{Supervisor-Modus}
-		\end{dinglist}
-		Jeder dieser vier Modi, bis auf den System-Modus, hat seinen eigenen Stackpointer und f\"ur jeden muss dementsprechend der passende Stackpointer gesetzt werden. Das ist deshalb notwendig da im Falle einer Exception der Prozessor in den jeweiligen Modus wechselt und wenn kein valider Stackpointer vorhanden ist kann es zu undefinierten Verhalten kommen. Die Gr\"o\ss e der Stackpointer l\"asst sich \"uber das Link-File bestimmen, f\"ur \mops wurde eine Gr\"o\ss e von 8KB je Modus gew\"ahlt.\\
-Sobald die Stacks alle initialisiert sind erfolgt der Sprung in die \texttt{main} Routine des Betriebssystem. Ab hier finden nun weitere Schritte statt um das System fertig zu initialisieren.
-	\end{enumerate}
+In den vorherigen Kapiteln wurde gekl\"art welche Anforderungen an \mops gemacht werden. In dem nun folgenden Kapitel wird eine Idee pr\"asentiert wie diese Komponenten miteinander interagieren sollen. Um einen groben \"Uberblick \"uber die Idee zu verschaffen soll dieses Kapitel mit einem Bild eingeleitet werden.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.60]{common/draft-overview.pdf}	
+	\caption{\mops \"Uberblick}
+	\label{draft:overview}
+\end{figure}\\
+\mops besteht im Gro\ss en und Ganzen aus vier \"ubergeordneten Komponenten. 
+\begin{dinglist}{227}
+	\item{\textbf{Ger\"ate}} \\ 
+	Wie in den Anforderungen beschrieben besteht \mops auf zwei Hardwarekomponenten. Diese Komponenten k\"onnen Interrupts ausl\"osen um mit dem Betriebssystem zu kommunizieren.
+	\item{\textbf{Interrupt Controller}} \\
+	Damit kommen wir zu einem weitern Punkt der \mops pr\"agt. Der Interrupt-Controller ist, wie in den Anforderungen beschrieben, eine Hardwarekomponente die auf den Chip integriert ist und die Priorisierung und Weiterleitung von Interrupts an das Betriebssystem steuert.
+	\item{\textbf{Threads}} \\
+	Die Threads stellen unter anderem die User-Programme in dem Betriebssystem dar. Sie k\"onnen mit dem Kernel interagieren und werden von dem Kernel verwaltet.
+	\item{\textbf{Kernel}} \\ 
+	Der Kernel ist der Hauptbestandteil von \mops, er stellt die Schnittstelle zu s\"amtlicher Hardware und den Threads dar.
+\end{dinglist}
+\section{Ger\"ate}
+Die Ger\"ate stellen neben dem Kernel und den Threads eine sehr wichtige Rolle in \mops dar. Die Ger\"ate k\"onnen \"uber Interrupts mit dem Kernel kommunizieren. Hierbei handelt es sich um eine hardware-basierte Interprozesskommunikation.
 \section{Interrupt-Controller}
-Ein Interrupt-Controller stellt in einem Betriebssystem die Schnittstelle zwischen den Interrupts und der Hardware dar Er priorisiert die Interrupts, die von externen wie auch internen Quellen ausgel\"ost werden k\"onnen, und leitet sie an das Betriebssystem weiter. Es gibt zwei Arten von Controllern:
-\begin{dinglist}{227}
-	\item{Non-Vectored Interrupt-Controller}
-	\item{Vectored Interrupt-Controller}
-\end{dinglist}
-Die erste Version, \textbf{Non-Vectored Interrupt-Controller}, stellt nur die M\"oglichkeit bereit einen Interrupt abzufangen, jedoch muss sich der Programmierer darum k\"ummern welche Quelle den Interrupt ausgel\"ost hat, die Priorit\"at ermitteln und die passende Interrupt-Service Routine herausfinden. Das klingt zwar im ersten Moment ganz logisch und sinnvoll, ist aber mit einer Menge Code verbunden und stellt deshalb eine sehr gro\ss e Fehlerquelle dar.\\
-Der Vectored Interrupt-Controller ist eine in Hardware gegossene Komponente auf dem Board welches man benutzt. Er bietet die Konfigurationsm\"oglichkeit zu definieren, welche Interrupts von welchen Quellen ausgel\"ost werden k\"onnen, welche Priorit\"aten sie haben und welche Interrupt-Service Routinen f\"ur diese Interrupts zur Verf\"ugung gestellt werden. Nun brauch man im Falle eines Interrupts keine umfangreichen Mechanismen lostreten um die Quellen zu ermitteln, sondern der Interrupt-Controller stellt jetzt alle diese Informationen bereit. Die Installations dieses Controllers ist zwar komplexer als die der ersten Version, aber die M\"oglichkeiten sind breiter und die Benutzung ist komfortabler. Aus diesen Gr\"unden wurde sich bei \mops f\"ur den \textbf{Vectored Interrupt Controller} entschieden.
-Das folgende Bild ist eine schematische Darstellung des Vectored Interrupt-Controller.
-
-\begin{figure}[H]
-	\begin{center}	
-	\caption{Vectored Interrupt Controller}
-	\includegraphics[scale=0.60]{common/vic.pdf}
-	\end{center}
-	\label{vicSchema}
+Wie aus der Abbildung \ref{draft:overview} ersichtlich liegt zwischen den Ger\"aten und Kernel der sogenannte Interrupt-Controller, eine Hardwarekomponente die die Priorisierung und Verwaltung von Interrupts \"ubernimmt. In der Idee von \mops hat der Interrupt-Controller die Funktion die Quellen der Interrupts zu lokalisieren und die passenden Interrupt-Service-Routine bereitzustellen, sodass diese von dem Kernel ausgef\"uhrt werden k\"onnen. Abbildung \ref{draft:draft-vic} soll das verdeutlichen.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.60]{common/draft-vic.pdf}	
+	\caption{Interrupt-Controller}
+	\label{draft:draft-vic}
 \end{figure}
-\noindent
-Sofern das Board einen Vectored Interrupt-Controller zur Verf\"ugung stellt ist dieser an einer bestimmten Adresse lokalisiert. Bei dem von \mops emulierten System ist die Adresse \texttt{0x10140000}\parencite[vgl.][223]{archManI}. Ab dieser Adresse beginnt der Adressbereich des Controllers, hier befinden sich oben genannte Register wie Statusregister, Interrupt Enable Register, Interrupt Clear Register, Interrupt Select Register etc., desweiteren sind hier auch die f\"ur die Interrupt Vectoren wie auch die Control Register f\"ur die jeweiligen Interrupts \parencite[vgl.][35]{vic}.\\\\
-Die relevanten Register f\"ur \mops sind die Vector Address Register, Control Register, Interrupt Enable, Interrupt Clear und Interrupt Select Register. \"Uber diese ist es m\"oglich die Service Routinen f\"ur die Interrupts zu definieren, wie auch die Priorit\"aten und ob der konfigurierte Interrupt als ein IRQ oder FIQ behandelt werden soll. Mit der folgenden Grafik wird schematisch dargestellt wie eine Konfiguration des Controllers aussehen kann.
-\begin{figure}[H]
-	\begin{center}	
-	\caption{Konfigurationsbeispiel VIC}
-	\includegraphics[scale=0.60]{common/vicsample.pdf}
-	\end{center}
-	\label{draft:vicSample}
-\end{figure}
-\noindent
-Dieses Beispiel zeigt eine Beispielkonfiguration des Timerinterrupts. Um diesen Interrupt zu konfigurieren sind vier Schritte notwendig:
-\begin{dinglist}{227}
-	\item{Installation der Adresse der Interrupt Service Routine}
-	\item{Konfiguration des Control Register mit Priorit\"at des Timers}
-	\item{Entscheidung ob der Interrupt als IRQ oder FIQ ausgel\"ost werden soll}
-	\item{Aktivierung der Interrupt-Ausl\"osung}
-\end{dinglist}
-F\"ur den \textit{Timer0-Interrupt} muss an dieser Stelle das 4. Bit \parencite[vgl. Tabelle 4-40][227]{archManI} in dem Interrupt-Controller setzen. Das gilt sowohl f\"ur die Aktivierung, Auswahl des Interrupts als auch die Priorit\"at.
-
-\section{Interrupt-Service Routinen}
-Nachdem die Interrupts konfiguriert wurden ist es notwendig die Interrupt-Service Routinen der Interrupts zu definieren. Beispielhaft werden hier die Routinen des Timers und des UART0-Interrupts pr\"asentiert.
-\begin{figure}[H]
-	\begin{center}	
-	\caption{Interrupt Service-Routinen Timer \& UART0}
-	\includegraphics[scale=0.60]{common/isr.pdf}
-	\end{center}
-\end{figure}
-\noindent
-Sobald der Interrupt ausgel\"ost wurde behandelt der Controller diesen und leitet es an die zugeh\"orige Routine zur Behandlung weiter. Im Beispiel des Timers, wird hier der Interrupt erst im Controller auf 'Behandelt' gesetzt und dann wird der Scheduler aufgerufen um dem n\"achsten Prozess zu starten. Das L\"oschen des Interrupts im Controller ist deshalb erforderlich, damit ein neuer Interrupt ausgel\"ost werden kann, denn nur nachdem der Interrupt als behandelt markiert wurde, kann ein neuer erzeugt werden. \\ In der aktuellem Implementation von \mops gibt es zwei Interrupts auf die reagiert wird. Zum einen ist das der \textit{Timer0}-Interrupt und zum anderen der Interrupt des \textit{UART0}-Interface. Bei Bedarf kann man auch noch weiter Interrupts definieren, dazu muss jedoch die Konfiguration des VIC abg\"andert werden.
 \newpage
-\section{Syscalls}
-Neben den IRQ und FIQ spielen die Syscall-Interrupts auch noch eine sehr wichtige Rolle. Im Rahmen der ARM-Architektur wurden die Syscalls mit dem Namen \textit{Software Interrupts} bezeichnet. Sicherlich ist der Name Syscalls oder Traps gel\"aufiger. Um aber konsitent zu bleiben, wird im laufenden der Name Software Interrupt(SWI) verwendet.\\
-Ein SWI ist ein Interrupt der nicht im Kernel-Modus l\"auft aber Kernel-Routinen aufrufen darf. Das ist dann sinnvoll, wenn ein User-Programm Zugriff auf eine Kernel-Routine (wie das Schreiben auf die Konsole) ben\"otigt. Wie in Abbildung \ref{draft:excptionTable} zu erkennen ist, wird bei einem SWI-Interrupt die ARM\_swi Routine angsprungen. Diese Routine leitet den Interrupt-Request an eine weitere Komponente weiter die schematisch wie folgt aussieht.
-\begin{figure}[H]
-	\begin{center}	
-	\caption{SWI-Handler}
-	\includegraphics[scale=0.60]{common/swihandler.pdf}
-	\end{center}
+\section{Threads}
+In den Anforderungen wurde beschrieben das \mops aus drei Threads besteht. Diese Threads stellen User-Programme dar die \"uber bestimmte Routinen mit dem Kernel kommunizieren jedoch aber auch von Interrupts unterbrochen werden k\"onnen. Ein Thread ist in \mops, wie auch in vielen anderen Betriebssystemen, ein Abbild von einem Prozess der definierte Aktionen ausf\"uhrt, z.B. eine Berechnung oder eine Ausgabe. Damit diese Aufgabe nicht der Kernel \"ubernehmen muss existieren eben genannte Threads. Aufgrund der Tatsache das \mops keine Festplatte oder ein anderes dauerhaft beschreibbares Medium besitzt, m\"ussen die Threads alle in den RAM geladen werden. Die Idee von \mops war es also die Threads in einen definierten Bereich im RAM zu laden. Die folgende Abbildung zeigt diesen Sachverhalt.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.60]{common/draft-thread-overview.pdf}	
+	\caption{Thread-Layout im RAM}
+	\label{draft:draft-thread-overview}
+\end{figure}\\
+An erste Stelle liegt nat\"urlich der Kernel, dann kann noch etwas freier Plaz kommen und danach liegen alle Threads hintereiander im RAM.
+\\\\
+Wie schon in den Anforderungen beschrieben ist es \mops nicht m\"oglich Threads zur Laufzeit zu erzeugen sondern es kann nur die vordefinierten starten und verwalten. Es musste also eine Vorgehensweise entwickelt werden wie diese Threads in den RAM kommen und vor allem, wie sie in \mops integriert werden konnten. \\
+Hierzu entstand die Idee der RAM-Disk. Das ist eine Datei in der die Informationen zu den Threads gespeichert wurden. Nun stellt sich nat\"urlich die Frage welche Informationen das sind. Die Frage l\"asst sich ganz einfach beantworten: \textbf{Die Information die einen Thread klassifizieren muss ohne Zweifel der Assembler-Code des Threads}. 
+\newpage
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.60]{common/draft-thread-ramdisk.pdf}	
+	\caption{Erstellung der RAM-Disk}
+	\label{draft:draft-thread-ramdisk}
 \end{figure}
 \noindent
-In der aktuellen Fassung von \mops ist nur der SWI-Handler f\"ur den \texttt{Print\_Char}-SWI definiert, es sollen jedoch weitere folgen.
-\section{Threadmanagment}
-\subsection{Threadlayout}
-Das Prozessmanagment spielt eine wichtige Rolle in jedem Betriebssystem. Aufgrund der Komplexit\"at und des zeitlichen Faktors wurde bei \mops auf ein rudiment\"areres System gesetzt. Ziel war es auch nicht das Prozessmanagment, im Einzelnen, zu beleuchten sondern die Gesamtheit eines Mini-Betriebssystem. Das bedeutet das keine Prozesse zur Laufzeit des Systems geladen werden k\"onnen sondern die Prozesse vor Beginn definiert werden mussten.\\
-Eine abstrakte Darstellung dieses Thread-Image kann man sich wie folgt vorstellen:
-\begin{figure}[H]
-	\begin{center}	
-	\caption{Thread-Image}
-	\includegraphics[scale=0.60]{common/threadimage.pdf}
-	\end{center}
-\end{figure}
-\noindent
-Diese Struktur wird zu Begin des Betriebssystem im RAM hergestellt. Zuvor muss jedoch doch der Assemblercode aus dem zu ladenen Prozess extrahiert werden. Die Prozesse werden als einfache C-Programme dargestellt. Diese C-Programme werden so rudiment\"ar wir m\"oglich Kompiliert und gelinkt, das bedeutet das s\"amtliche Standardbibliotheken nicht mit gelinkt werden und keine main-Funktion bereitgestellt wird. Die entstandene .ELF-Datei wird dann ins Bin\"arformat umkopiert und danach extrahiert ein Programm den Assemblercode aus der Bin\"ardatei und schreibt diese in eine RAM-Disk. F\"ur \mops wurde eine sehr proprit\"are RAM-Disk gew\"ahlt. Folgende Grafik zeigt eine schematische Darstellung dieser RAM-Disk. 
-\begin{figure}[H]
-	\begin{center}	
-	\caption{RAM-Disk}
-	\includegraphics[scale=0.60]{common/ramdisk.pdf}
-	\label{ramdisk}
-	\end{center}
-\end{figure}
-\noindent
-Nachdem diese RAM-Disk erstellt wurde, kann \mops diese im Betrieb laden und den Assemblercode an die passende Position im RAM laden. Neben den Informationen \"uber den Assembler-Code enth\"alt die RAM-Disk unter anderem die Information wieviel Bytes an Stack f\"ur den Prozess reserviert werden. Dieser Bereich wird dann beim kopieren vorerst nur mit Nullen aufgef\"ullt. \\
-Um die M\"oglichkeit offen zu halten mehr als einen Prozess in den RAM zu laden, stellt die RAM-Disk eine weitere Tabelle zur Verf\"ugung in welcher die Informationen zur L\"ange jeder einzelnen Prozesse eingetragen sind. F\"ur Abbildung \ref{ramdisk} bedeutet dass, das der erste Prozess eine L\"ange von 11 aufweist und ab dem 12. Eintrag der n\"achste Prozess beginnt.
-\subsection{Scheduling}
-Sobald der Prozess in den RAM geladen wurde, kann das Betriebssytem jetzt den ersten dieser Prozesse starten. Dieser Start manifestiert sich dadurch das der Stackpointer, vom Kernel auf den Start-Bereich des neuen Stacks von dem Prozess, umgemappt werden muss. Danach werden alle Register auf dem neuen Stack gesichert und es erfolgt ein Sprung in die Routine die zuletzt aus der RAM-Disk geladen wurde. 
-\begin{figure}[H]
-	\begin{center}	
-	\caption{RAM-Disk}
-	\includegraphics[scale=0.60]{common/scheduler.pdf}
-	\label{scheduler}
-	\end{center}
-\end{figure}
-\noindent
-In Grafik \ref{scheduler} wird veranschaulicht wie der Mechanismus des Prozessumschalten in \mops umgesetzt wurde. Hier sieht man das aller 100ms der Timer-Interrupt ausgel\"ost wird und dieser startet den Scheduler. Der Scheduler sucht dann den n\"achsten wartenden Prozess, hier Gelb, raus und schaltet diesen ein. Der andere, momentan gr\"une, wird dann in den wartenden Status geschalten.
-Es gibt einige bekannte Scheduling-Verfahren in modernen Betriebssystemen, viele dieser Verfahren kooperieren auch unter bestimmten Umst\"anden um die beste Performance herauszuholen. Hier sind ein paar der wichtigsten Verfahren etwas n\"aher beschrieben:
-\begin{dinglist}{227}
-	\item{\textbf{First-Come First-Serve}} \\
-	Dieses System kann man sich wie eine Schlange an der Post vorstellen. Prozesse werden in eine Queue\footnote{Eine weitverbreitete Datenstruktur in modernen Programmiersprachen die nach dem \textit{First-In First-Out} Prinzip funktioniert.} gepackt und von dort bearbeitet. Dieses System hat jedoch den Nachteil das lange Wartezeiten, durch Prozesse die die CPU sehr \"uberdurschnittlich lange in Anspruch nehmen, entstehen k\"onnen.
-	\item{\textbf{Shortest-Job-First}}\\
-	W\"ahrend bei diesem Verfahren darauf abgezielt wird den Prozessen die CPU-Zeit zu \"uberlassen welche am k\"urzesten sind. Wie in \cite[189]{scheduling} geschrieben 
-\begin{quote}
-	\textquote{\textit{This  algorithm associates with each process  the length of the 
-process's next CPU burst.}}
-\end{quote}
-versucht dieser Algorhithmus anhand der CPU-Bursts\parencite[vgl.][184]{scheduling} zu ermitteln wie lange ein Prozess in etwa ben\"otigen wird. Anhand dieser Informationen wird also dann der n\"achste Prozess ermittelt der an der Reihe ist.
-Sollten jedoch zwei Prozesse die gleichen CPU-Bursts haben, so wird das \textit{First-Come First-Serve} Verfahren angewendet. Der Vorteil hier ist nat\"urlich das es wesentlich optimaler als die vorherig genannten, jedoch ist es auch komplizierter zu implementieren.\\
-	\item{\textbf{Round-Robin}}\\
-	Dieses Verfahren 
-		\textquote{\textit{is designed especially for  time-
-sharing systems.}}\parencite[vgl.][194]{scheduling}
-Das bedeutet das der Algorhitmus eine kleine Zeitscheibe definiert in der der Prozess die CPU bekommt. Danach werden die Prozesse die sich in der ``Ready-Queue'' befinden abgearbeitet und jeder bekommt f\"ur die vorher bestimmte Zeit die CPU. Diese Queue wird als eine Ring-Liste behandelt, das hat den Effekt das der Scheduler immer wieder jeden Prozess kurz rannimmt. Der Vorteil dieses Mechanismus ist das jeder Prozess gleich bewertet wird und das es relativ einfach zu implementieren ist. Jedoch bringt genau dieser Vorteil auch einen Nachteil mit sich, n\"amlich das Prozesse die eigentlich eine l\"angere Zeitschreibe br\"auchten immer warten m\"ussen bis sie wieder am Zug sind und das kann nat\"urlich zu sehr hohen Latenzen in der Ausf\"uhrung kommen.
-\end{dinglist}
-Es wurden jetzt eine Reihe von Scheduling-Mechanismen vorgestellt und es musste eine Entscheidung f\"ur \mops getroffen werden. Aufgrund der einfachen Implementation, fiel die Wahl auf das \textbf{Round-Robin} Verfahren. Die Nachteile konnten f\"ur die erste Version von \mops vernachl\"assigt werden.
+Die Idee die in \mops verfolgt wurde bestand darin einfache C-Programme zu entwerfen und diese durch ein Programm zu schicken das den Assembler-Code dieser Programme extrahiert. In Abbildung \ref{draft:draft-thread-ramdisk} ist zu erkennen das zwei Programme durch die sogenannte RAM-Disk Fabrik wandern und diese extrahiert den Assembler-Code und verpackt ihn in die daf\"ur vorgesehene RAM-Disk. Der entstandene Assembler-Code kann dann von einem \mops -definierten Lader in den Speicher bef\"ordert werden.\\\\
+Neben dem vorbereiten und Laden der Threads in den RAM ist es aber auch notwendig die Threads zu verwalten. Diese Aufgabe \"uebernimmt unter anderem der Kernel.
+\section{Kernel}
+Der Kernel ist der Teil von \mops der s\"amtliche Verwaltungsaufgaben \"ubernimmt die man sich vorstellen kann. Das geht von den Interrupts bis hin zur Verwaltung der Threads.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.60]{common/draft-kernel.pdf}	
+	\caption{Kernel - \"Uberblick}
+	\label{draft:draft-kernel}
+\end{figure}\newpage\noindent
+Die Abbildung \ref{draft:draft-kernel} gibt nochmal eine detailierten Einblick in das Innenleben des Kernels. Zu sehen sind hier alle Komponenten die auf die Idee mit Einfluss hatten. Der RAM-Disk Lader, Interrupt-Service Routinen, der Scheduler und die Trap-Routinen. Diese Abbildung soll darstellen wie ein normaler Ablauf in dem Kernel aussehen kann. \\
+Im ersten Schritt kommt ein Interrupt oder Fast-Interrupt-Request in das System, der Interrupt-Controller priorisiert diesen dann und stellt dem Kernel die passende Interrupt-Service Routine zur Verf\"ugung. Die jeweilige Routine kann dann z.B. entweder einen Trap-Routine Aufrufen oder aber, was wesentlich interessanter ist, den Scheduler. Dieser Scheduler geht dann an die Thread-Tabelle und greift sich einen neuen Thread der jetzt in den Prozessor geladen wird. Womit wir beim n\"achsten Punkt sind.\\ \\
+Der Scheduler ist ein Manager f\"ur die Verwaltung der Prozessorzeiten und Priorisierung der Threads.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.60]{common/draft-scheduler.pdf}	
+	\caption{Scheduler}
+	\label{draft:draft-scheduler}
+\end{figure}\\
+Er setzt sich aus zwei wichtigne Komponenten zusammen. Dem Scheduling-Verfahren, welches frei gew\"ahlt werden kann und einer Tabelle von Threads. Aus dieser Tabelle w\"ahlt der Scheduler, je nach Scheduling-Verfahren, einen Thread aus und \"ubergibt ihm die Kontrolle. Es gibt viele Scheduling-Verfahren, aber hier wurde sich jedoch einer Idee bedient die in der fr\"uhzeitigen Entwicklung von Schedulern weit verbreitet war. 
+\newpage\noindent
+Das Verfahren nennt sich \textbf{Round-Robin-Verfahren}. Die folgende Grafik soll das Verfahren beschreiben.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.60]{common/draft-roundrobin.pdf}	
+	\caption{Round-Robin Verfahren - Schematisch}
+	\label{draft:draft-roundrobin}
+\end{figure}\\
+Beim Round-Robin Verfahren wird der Scheduler so entwurfen das er jedem Thread eine fixe Zeitspanne an Prozessorzeit zusichert und die Kontrolle dann an den jeweiligen Thread \"ubergibt. Nach Ablauf der Zeit wird dann der n\"achsten Thread in der Tabelle aufgerufen. Diese Verfahren wurde f\"ur \mops deshalb gew\"ahlt weil in Handheld Ger\"aten keine Sonderpriorisierungen stattfinden m\"ussen und die Umsetzung in den Zeitrahmen passte.

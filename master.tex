@@ -33,9 +33,11 @@
 \mbox{}
 
 \tableofcontents
+\pagenumbering{roman}
 \listoftables
 \listoffigures
 \lstlistoflistings
+\pagenumbering{arabic}
 \chapter{Einleitung}
 \input{introduction/introduction.tex}
 \chapter{Anforderungskatalog}
@@ -44,6 +46,8 @@
 \input{introduction/processor.tex}
 \chapter{Entwurf}
 \input{common/draft.tex}
+\chapter{Konkretisierung des Entwurf}
+\input{common/concreteDraft.tex}
 \chapter{Implementation}
 \input{common/implementation.tex}
 \chapter{Fazit}

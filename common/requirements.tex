@@ -12,7 +12,7 @@ Da \mops voranging im Bereich der Handhelds eingesetzt werden soll ist es f\"ur 
 \section{Interruptquellen und Interrupthandler}
 Ein Prozessor muss im Falle eines Interrupts, z.B. ein Reset des Prozessors, IRQ, FIQ, Prefetch Abort, Software Interrupt oder eine undefinierte Aktion, in der Lage sein diese ad\"aquat zu behandeln. Die meist verwandte Vorgehensweise ist es eine Tabelle im Speicher zu definieren, die genau f\"ur diese Zwecke Routinen bereitstellt\parencite[53]{archManI}.\\ Tritt nun eine Interrupt auf, gibt es eine vordefinierte Reihenfolge an Aktionen, die der Prozessor ausf\"uhrt. Damit immer valide Routinen zur Behandlung der Interrupts in dieser Tabelle stehen, muss jene w\"ahrend der Initialisierung des Systems angelegt werden. Was \mops also ben\"otigt ist ein System zur Behandlung und Konfiguration von Interrupts und Interruptquellen.
 \section{Vectored Interrupt Controllor}
-Dieses System stellt ein Software Interface zum Interruptsystem des Prozessors dar. In Systemen mit klassischen Interrupt Controllern muss die Software sowohl die Herkunft des Interrupt Request, als auch die Interrupt Service Routine ermitteln. Diese Aufgabe \"ubernimmt der VIC nun komplett selbst\"andig.
+Dieses System stellt ein Hardware Interface zum Interruptsystem des Prozessors dar. In Systemen mit klassischen Interrupt Controllern muss die Software sowohl die Herkunft des Interrupt Request, als auch die Interrupt Service Routine ermitteln. Diese Aufgabe \"ubernimmt der VIC nun komplett selbst\"andig.
 Die korrekte Behandlung von sowohl Interrupt Requests(IRQ) als auch Fast Interrupt Requests(FIQ) stellen eine wichtige Rolle in Betriebssystemen dar.\\
 Hier gibt es zwei unterschiedliche Mechanismen IRQ/FIQ's zu behandeln:
 
@@ -21,7 +21,7 @@ Hier gibt es zwei unterschiedliche Mechanismen IRQ/FIQ's zu behandeln:
 	\item[Vectored Interrupt Controller] - Diese Controller vereinen beide oben genannten Fakten, denn sie werden initial mit den Priorit\"aten der Requests und den zugeh\"origen Routinen gef\"ullt und k\"onnen dann zur Laufzeit die passende Routine direkt zur\"uckgeben.
 \end{description}
 Bei \mops fiel die Entscheidung darauf, die 2. Variante, den Vectored Interrupt Controller, zu implementieren. Die Vorteile werden noch genauer erl\"autert.
-\section{Hardware}
+\section{Ger\"ate}
 Im folgenden wird die Hardware definiert mit der \mops arbeitet. Zum einen sind das Timer und zum anderen die Serielle Schnittstelle.
 \subsection{Timer}
 Timer stellen wichtige Schl\"usselfaktoren in Betriebssystemen dar. Ihr Hauptzweck ist die periodische Behandlung von Ereignissen und das ansteuern des Schedulers. \\

@@ -2,104 +2,116 @@
 \defcounter {refsection}{0}\relax 
 \select@language {ngerman}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {1}Einleitung}{9}{chapter.1}
+\contentsline {chapter}{\numberline {1}Einleitung}{2}{chapter.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {2}Anforderungskatalog}{11}{chapter.2}
+\contentsline {chapter}{\numberline {2}Anforderungskatalog}{4}{chapter.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.1}Einleitung}{11}{section.2.1}
+\contentsline {section}{\numberline {2.1}Einleitung}{4}{section.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.2}Interruptquellen und Interrupthandler}{12}{section.2.2}
+\contentsline {section}{\numberline {2.2}Interruptquellen und Interrupthandler}{5}{section.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.3}Vectored Interrupt Controllor}{12}{section.2.3}
+\contentsline {section}{\numberline {2.3}Vectored Interrupt Controllor}{5}{section.2.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.4}Hardware}{12}{section.2.4}
+\contentsline {section}{\numberline {2.4}Ger\"ate}{5}{section.2.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.4.1}Timer}{12}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.1}Timer}{5}{subsection.2.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.4.2}Serielle Schnittstelle - UART}{13}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.2}Serielle Schnittstelle - UART}{6}{subsection.2.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.4.3}Speicher}{13}{subsection.2.4.3}
+\contentsline {subsection}{\numberline {2.4.3}Speicher}{6}{subsection.2.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.5}Threadmanagment}{13}{section.2.5}
+\contentsline {section}{\numberline {2.5}Threadmanagment}{6}{section.2.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}Vorstellung ARM926EJ-S Prozessor}{14}{chapter.3}
+\contentsline {chapter}{\numberline {3}Vorstellung ARM926EJ-S Prozessor}{7}{chapter.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Einleitung}{14}{section.3.1}
+\contentsline {section}{\numberline {3.1}Einleitung}{7}{section.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}RISC- vs CISC-Prozessoren}{15}{section.3.2}
+\contentsline {section}{\numberline {3.2}RISC- vs CISC-Prozessoren}{8}{section.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.3}ARM926EJ-S}{16}{section.3.3}
+\contentsline {section}{\numberline {3.3}ARM926EJ-S}{9}{section.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.4}Register}{16}{section.3.4}
+\contentsline {section}{\numberline {3.4}Register}{9}{section.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.5}Prozessor Modus}{17}{section.3.5}
+\contentsline {section}{\numberline {3.5}Prozessor Modus}{10}{section.3.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Entwurf}{19}{chapter.4}
+\contentsline {chapter}{\numberline {4}Entwurf}{12}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.1}Einleitung}{19}{section.4.1}
+\contentsline {section}{\numberline {4.1}Einleitung}{12}{section.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.2}Startmechanismus}{19}{section.4.2}
+\contentsline {section}{\numberline {4.2}Ger\"ate}{13}{section.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.3}Interrupt-Controller}{21}{section.4.3}
+\contentsline {section}{\numberline {4.3}Interrupt-Controller}{13}{section.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.4}Interrupt-Service Routinen}{23}{section.4.4}
+\contentsline {section}{\numberline {4.4}Threads}{14}{section.4.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.5}Syscalls}{24}{section.4.5}
+\contentsline {section}{\numberline {4.5}Kernel}{15}{section.4.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.6}Threadmanagment}{24}{section.4.6}
+\contentsline {chapter}{\numberline {5}Konkretisierung des Entwurf}{18}{chapter.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {4.6.1}Threadlayout}{24}{subsection.4.6.1}
+\contentsline {section}{\numberline {5.1}Einleitung}{18}{section.5.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {4.6.2}Scheduling}{26}{subsection.4.6.2}
+\contentsline {section}{\numberline {5.2}Startmechanismus}{18}{section.5.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Implementation}{28}{chapter.5}
+\contentsline {section}{\numberline {5.3}Interrupt-Controller}{20}{section.5.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5.1}Einleitung}{28}{section.5.1}
+\contentsline {section}{\numberline {5.4}Interrupt-Service Routinen}{22}{section.5.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5.2}Entwicklungsumgebung}{28}{section.5.2}
+\contentsline {section}{\numberline {5.5}Syscalls}{23}{section.5.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5.3}Startmechanismus}{29}{section.5.3}
+\contentsline {section}{\numberline {5.6}Threadmanagment}{23}{section.5.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5.4}Interrupt-Controller}{33}{section.5.4}
+\contentsline {subsection}{\numberline {5.6.1}Threadlayout}{23}{subsection.5.6.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5.5}Interrupt Service Routinen}{35}{section.5.5}
+\contentsline {subsection}{\numberline {5.6.2}Scheduling}{25}{subsection.5.6.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5.6}Syscalls}{35}{section.5.6}
+\contentsline {chapter}{\numberline {6}Implementation}{27}{chapter.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5.7}Prozessmanagment}{36}{section.5.7}
+\contentsline {section}{\numberline {6.1}Einleitung}{27}{section.6.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.7.1}RAM-Disk}{37}{subsection.5.7.1}
+\contentsline {section}{\numberline {6.2}Entwicklungsumgebung}{27}{section.6.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.7.2}\textbf {\textit {{\relax \fontsize {14.4}{18}\selectfont M}\textsc {op}{\relax \fontsize {14.4}{18}\selectfont S} }}Loader}{38}{subsection.5.7.2}
+\contentsline {section}{\numberline {6.3}Startmechanismus}{28}{section.6.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.7.3}Prozess-Layout}{39}{subsection.5.7.3}
+\contentsline {section}{\numberline {6.4}Interrupt-Controller}{32}{section.6.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.7.4}Prozess Generierung}{42}{subsection.5.7.4}
+\contentsline {section}{\numberline {6.5}Interrupt Service Routinen}{34}{section.6.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {6}Fazit}{43}{chapter.6}
+\contentsline {section}{\numberline {6.6}Syscalls}{34}{section.6.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Literatur}{44}{chapter.6}
+\contentsline {section}{\numberline {6.7}Prozessmanagment}{35}{section.6.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Anhang}{44}{chapter.6}
+\contentsline {subsection}{\numberline {6.7.1}RAM-Disk}{36}{subsection.6.7.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {A}Implementation}{45}{chapter.1}
+\contentsline {subsection}{\numberline {6.7.2}\textbf {\textit {{\relax \fontsize {14.4}{18}\selectfont M}\textsc {op}{\relax \fontsize {14.4}{18}\selectfont S} }}Loader}{37}{subsection.6.7.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A.1}RAM-Disk Maker}{45}{section.1.1}
+\contentsline {subsection}{\numberline {6.7.3}Prozess-Layout}{38}{subsection.6.7.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {B}Werkzeuge}{48}{chapter.2}
+\contentsline {subsection}{\numberline {6.7.4}Prozess Generierung}{41}{subsection.6.7.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {B.1}Einleitung}{48}{section.2.1}
+\contentsline {chapter}{\numberline {7}Fazit}{42}{chapter.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1.1}arm-none-linux-gnueabi-as}{48}{subsection.2.1.1}
+\contentsline {chapter}{Literatur}{43}{chapter.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1.2}arm-none-linux-gnueabi-gcc}{48}{subsection.2.1.2}
+\contentsline {chapter}{Anhang}{43}{chapter.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1.3}arm-none-linux-gnueabi-ld}{48}{subsection.2.1.3}
+\contentsline {chapter}{\numberline {A}Implementation}{44}{chapter.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1.4}arm-none-linux-gnueabi-objcopy}{49}{subsection.2.1.4}
+\contentsline {section}{\numberline {A.1}RAM-Disk Maker}{44}{section.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1.5}arm-none-linux-gnueabi-objdump}{49}{subsection.2.1.5}
+\contentsline {chapter}{\numberline {B}Werkzeuge}{47}{chapter.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1.6}make}{49}{subsection.2.1.6}
+\contentsline {section}{\numberline {B.1}Einleitung}{47}{section.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1.7}qemu}{50}{subsection.2.1.7}
+\contentsline {subsection}{\numberline {B.1.1}arm-none-linux-gnueabi-as}{47}{subsection.2.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.1.2}arm-none-linux-gnueabi-gcc}{47}{subsection.2.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.1.3}arm-none-linux-gnueabi-ld}{47}{subsection.2.1.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.1.4}arm-none-linux-gnueabi-objcopy}{48}{subsection.2.1.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.1.5}arm-none-linux-gnueabi-objdump}{48}{subsection.2.1.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.1.6}make}{48}{subsection.2.1.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.1.7}qemu}{49}{subsection.2.1.7}
