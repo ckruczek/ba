@@ -22,9 +22,9 @@ Interrupts k\"onnen von externen oder internen Ressourcen ausgel\"ost werden. Da
 				\caption{Erzeugen der Sprungtabelle}
 				\label{draft:excptionTable}
 			\end{figure}\\
-			In diesem Schritt ist erkennbar, dass es zwei Tabelle gibt die von dem Programmierer erstellt werden m\"ussen. Die erste Tabelle enth\"alt Programm-Relative Adressen auf eine zweite Tabelle. In der zweiten Tabelle befinden sich dann die konkreten Adressen der Exceptionhandler. Neben der Exception f\"ur einen Reset des Systems gibt es noch weitere Exceptions wie die Undefined Operation (ARM\_undef), Softwareinterrupt (ARM\_swi), Prefetch-Abort (ARM\_pAbort), Data-Abort(ARM\_dAbort),  die Reserved Exception (ARM\_reserved) und ganz wichtig zu erw\"ahnen der IRQ (ARM\_irq und FIQ (ARM\_fiq).\\\\
+			In diesem Schritt ist erkennbar, dass es zwei Tabelle gibt die von dem Programmierer erstellt werden m\"ussen. Die erste Tabelle enth\"alt Programm-Relative Adressen auf eine zweite Tabelle. In der zweiten Tabelle befinden sich dann die konkreten Adressen der Interrupthandler. Neben des Interrupt f\"ur einen Reset des Systems gibt es noch weitere Interrupts wie die Undefined Operation (ARM\_undef), Softwareinterrupt (ARM\_swi), Prefetch-Abort (ARM\_pAbort), Data-Abort(ARM\_dAbort),  die Reserved Exception (ARM\_reserved) und ganz wichtig zu erw\"ahnen der IRQ (ARM\_irq und FIQ (ARM\_fiq).\\\\
 Der Vorteil des Mechanismus, Programmrelative Adresse anstatt die direkten Handler zu laden, besteht darin das man so leicht die Handler austauschen oder zus\"atzliche hinzuf\"ugen kann ohne dabei den Assemblercode zu \"andern.\\
-Neben der Erstellung der Sprungtabelle f\"ur die Exceptionhandler, ist es weiterhin notwendig den Stack f\"ur die jeweiligen Prozessormodi zu definieren, dies geschieht im n\"achsten Schritt.
+Neben der Erstellung der Sprungtabelle f\"ur die Interrupthandler, ist es weiterhin notwendig den Stack f\"ur die jeweiligen Prozessormodi zu definieren, dies geschieht im n\"achsten Schritt.
 		\item{\textbf{Erstellung der Stacks mit anschlie\ss enden Sprung in main}}\\
 		\label{draft:stack}
 		Die f\"ur \mops relevanten Modi des Prozessors sind 
@@ -49,7 +49,7 @@ Das folgende Bild ist eine schematische Darstellung des Vectored Interrupt-Contr
 
 \begin{figure}[H]
 	\begin{center}	
-	\caption{Vectored Interrupt Controller}
+	\caption{Vectored Interrupt Controller - relevante Register}
 	\includegraphics[scale=0.60]{common/vic.pdf}
 	\end{center}
 	\label{vicSchema}
@@ -59,7 +59,7 @@ Sofern das Board einen Vectored Interrupt-Controller zur Verf\"ugung stellt ist 
 Die relevanten Register f\"ur \mops sind die Vector Address Register, Control Register, Interrupt Enable, Interrupt Clear und Interrupt Select Register. \"Uber diese ist es m\"oglich die Service Routinen f\"ur die Interrupts zu definieren, wie auch die Priorit\"aten und ob der konfigurierte Interrupt als ein IRQ oder FIQ behandelt werden soll. Mit der folgenden Grafik wird schematisch dargestellt wie eine Konfiguration des Controllers aussehen kann.
 \begin{figure}[H]
 	\begin{center}	
-	\caption{Konfigurationsbeispiel VIC}
+	\caption{Konfiguration am Beispiel eines Timer Interrupt}
 	\includegraphics[scale=0.60]{common/vicsample.pdf}
 	\end{center}
 	\label{draft:vicSample}
@@ -67,12 +67,12 @@ Die relevanten Register f\"ur \mops sind die Vector Address Register, Control Re
 \noindent
 Dieses Beispiel zeigt eine Beispielkonfiguration des Timerinterrupts. Um diesen Interrupt zu konfigurieren sind vier Schritte notwendig:
 \begin{dinglist}{227}
-	\item{Installation der Adresse der Interrupt Service Routine}
-	\item{Konfiguration des Control Register mit Priorit\"at des Timers}
-	\item{Entscheidung ob der Interrupt als IRQ oder FIQ ausgel\"ost werden soll}
-	\item{Aktivierung der Interrupt-Ausl\"osung}
+	\item{Aktivierung des Interrupts im \textit{Interrupt Enable Register}. F\"ur den Timer-Interrupt muss hier das 4. Bit gesetzt werden \parencite[vgl.  Tabelle 4-40][227]{archManI}}
+	\item{Das \textit{Interrupt Select Register} muss auf 1 gesetzt werden um den Timer Interrupt als FIQ zu konfigurieren \parencite[vgl Tabelle 3-5][39]{vic}.}
+	\item{In dem \textit{Control Register} muss an der Array Stelle 1 das 4. Bit gesetzt werden um die Quelle von dem Timer-Interrupt zu definieren.}
+	\item{In dem \textit{Vector Address Register} muss an der Array Stelle 1 die Adresse der Interrupt Service Routine f\"ur den Timer-Interrupt eingetragen werden.}
 \end{dinglist}
-F\"ur den \textit{Timer0-Interrupt} muss an dieser Stelle das 4. Bit \parencite[vgl. Tabelle 4-40][227]{archManI} in dem Interrupt-Controller setzen. Das gilt sowohl f\"ur die Aktivierung, Auswahl des Interrupts als auch die Priorit\"at.
+
 
 \section{Interrupt-Service Routinen}
 Nachdem die Interrupts konfiguriert wurden ist es notwendig die Interrupt-Service Routinen der Interrupts zu definieren. Beispielhaft werden hier die Routinen des Timers und des UART0-Interrupts pr\"asentiert.
@@ -86,8 +86,8 @@ Nachdem die Interrupts konfiguriert wurden ist es notwendig die Interrupt-Servic
 Sobald der Interrupt ausgel\"ost wurde behandelt der Controller diesen und leitet es an die zugeh\"orige Routine zur Behandlung weiter. Im Beispiel des Timers, wird hier der Interrupt erst im Controller auf 'Behandelt' gesetzt und dann wird der Scheduler aufgerufen um dem n\"achsten Prozess zu starten. Das L\"oschen des Interrupts im Controller ist deshalb erforderlich, damit ein neuer Interrupt ausgel\"ost werden kann, denn nur nachdem der Interrupt als behandelt markiert wurde, kann ein neuer erzeugt werden. \\ In der aktuellem Implementation von \mops gibt es zwei Interrupts auf die reagiert wird. Zum einen ist das der \textit{Timer0}-Interrupt und zum anderen der Interrupt des \textit{UART0}-Interface. Bei Bedarf kann man auch noch weiter Interrupts definieren, dazu muss jedoch die Konfiguration des VIC abg\"andert werden.
 \newpage
 \section{Syscalls}
-Neben den IRQ und FIQ spielen die Syscall auch noch eine sehr wichtige Rolle. Im Rahmen der ARM-Architektur wurden die Syscalls mit dem Namen \textit{Software Interrupts} bezeichnet. Sicherlich ist der Name Syscalls oder Traps gel\"aufiger. Um aber konsitent zu bleiben, wird im laufenden der Name Software Interrupt(SWI) verwendet.\\
-Ein SWI ist eine Instruktuin die nicht im Kernel-Modus l\"auft aber Kernel-Routinen aufrufen darf. Das ist dann sinnvoll, wenn ein User-Programm Zugriff auf eine Kernel-Routine (wie das Schreiben auf die Konsole) ben\"otigt. Wie in Abbildung \ref{draft:excptionTable} zu erkennen ist, wird bei einem SWI-Interrupt die ARM\_swi Routine angsprungen. Diese Routine leitet den Interrupt-Request an eine weitere Komponente weiter die schematisch wie folgt aussieht.
+Neben den IRQ und FIQ spielen die Syscall auch noch eine sehr wichtige Rolle. Um einen Syscall aufzurufen ist es notwendig eine sogenannte SWI - \textit{Software Interrupt} Instruktion auszuf\"uhren. Diese Instruktion wird von einem Handler aufgefangen und dort wird entschieden welcher Syscall ausgef\"uhrt wird.\\
+Ein SWI ist eine Instruktion die nicht im Kernel-Modus l\"auft aber Kernel-Routinen aufrufen darf. Das ist dann sinnvoll, wenn ein User-Programm Zugriff auf eine Kernel-Routine (wie das Schreiben auf die Konsole) ben\"otigt. Wie in Abbildung \ref{draft:excptionTable} zu erkennen ist, wird bei einer SWI-Instruktion die ARM\_swi Routine angsprungen. Diese Routine leitet den Request an eine weitere Komponente weiter die schematisch wie folgt aussieht.
 \begin{figure}[H]
 	\begin{center}	
 	\caption{SWI-Handler}
@@ -95,8 +95,18 @@ Ein SWI ist eine Instruktuin die nicht im Kernel-Modus l\"auft aber Kernel-Routi
 	\end{center}
 \end{figure}
 \noindent
-In der aktuellen Fassung von \mops ist nur der SWI-Handler f\"ur den \texttt{Print\_Char}-SWI definiert, es sollen jedoch weitere folgen.
+In der aktuellen Fassung von \mops ist nur der SWI-Handler f\"ur den \texttt{Print\_Char}-SWI definiert, es sollen jedoch weitere folgen. Ein Syscall hat immer ein gewisse Anzahl von Parameter, da f\"ur \mops nur \texttt{Print\_Char} implementiert wurde reicht es hier nur die Parameter von dieser Methode zu beschreiben.\\ 
+Der Parameter f\"ur den beschrieben Syscall besteht im Groben und Ganzen nur aus einem Parameter, der Character der auf der Console ausgegeben werden soll.
 \section{Threadmanagment}
+Das Threadmanagment stellt die Verwaltung der Threads in einem System dar. Das bedeutet wie wechseln sich die Threads ab und von was k\"onnen sie unterbrochen werden . Wie diese Prozesse miteiander arbeiten, soll in der folgenden Grafik verdeutlicht werden.
+\begin{figure}[H]
+	\begin{center}	
+	\caption{\"Ubersicht Threadmanagement}
+	\includegraphics[scale=0.60]{common/draftconcrete-thread-managment.pdf}
+	\end{center}
+\end{figure}\noindent
+Die Ausgangsituation ist ein System in dem drei Threads koexistieren k\"onnen. Jeder dieser Threads hat, aufgrund des Scheduling-Verfahren, nur eine gewisse Zeit in der er arbeiten darf. Nun kommt ein Interrupt rein und unterbricht den aktuellen Thread, hier mit 1 beschrieben. \\
+Der Thread wird unterbrochen und es wird der Interrupthandler f\"ur diesen Interrupt aufgerufen, z.B. der Timer-Interrupthandler. Bei Punkt zwei ist dieser Interrupt-Handler dargestellt. Er ruft im dritten Schritt den Scheduler auf. Der Scheduler ermittelt dann, basierend auf dem Scheduling-Verfahren, den n\"achsten Thread der die Kontrolle bekommt, was hier im 4. Schritt stattfindet. 
 \subsection{Threadlayout}
 Das Threadmanagment spielt eine wichtige Rolle in jedem Betriebssystem. Aufgrund der Komplexit\"at und des zeitlichen Faktors wurde bei \mops auf ein rudiment\"areres System gesetzt. Das bedeutet das keine Threads zur Laufzeit des Systems geladen werden k\"onnen sondern die Threads vor Beginn definiert werden mussten.\\
 Eine abstrakte Darstellung dieses Thread-Image kann man sich wie folgt vorstellen:
@@ -128,7 +138,7 @@ Sobald der Thread in den RAM geladen wurde, kann das Betriebssytem jetzt den ers
 	\end{center}
 \end{figure}
 \noindent
-In Grafik \ref{scheduler} wird veranschaulicht wie der Mechanismus des Thread-Umschalten in \mops umgesetzt wurde. Hier sieht man das aller 100ms der Timer-Interrupt ausgel\"ost wird und dieser startet den Scheduler. Der Scheduler sucht dann den n\"achsten wartenden Prozess, hier Gelb, raus und schaltet diesen ein. Der andere, momentan gr\"une, wird dann in den wartenden Status geschalten.
+In Grafik \ref{scheduler} wird veranschaulicht wie der Mechanismus, des Thread-Umschalten, in \mops umgesetzt wurde. Hier sieht man das aller 100ms der Timer-Interrupt ausgel\"ost wird und dieser startet den Scheduler. Der Scheduler sucht dann den n\"achsten wartenden Prozess, hier Gelb, raus und schaltet diesen ein. Der andere, momentan gr\"une, wird dann in den wartenden Status geschalten.
 Es gibt einige bekannte Scheduling-Verfahren in modernen Betriebssystemen, viele dieser Verfahren kooperieren auch unter bestimmten Umst\"anden um die beste Performance herauszuholen. Hier sind ein paar der wichtigsten Verfahren etwas n\"aher beschrieben:
 \begin{dinglist}{227}
 	\item{\textbf{First-Come First-Serve}} \\
