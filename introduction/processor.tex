@@ -62,16 +62,42 @@ Der ARM926 Prozessor ist ein 32-Bit RISC Prozessor. Dieser Prozessor hat eine Ge
 \footnotesize\textbf{Quelle:}\parencite[43]{archManI}
 \caption{ARM926EJ-S Register}
 \end{figure}
-Teilweise sind die Register mehrfach vergeben, denn im ARM Prozessor gibt es unterschiedliche Prozessor-Modi und f\"ur ein gro\ss teil dieser Modi stellt der Prozessor f\"ur R13 und R14 neue Register zur Verf\"ugung. Das spielt dann eine wichtige Rolle wenn man unterschiedliche Stacks f\"ur die Modi aufbauen muss.
+Teilweise sind die Register mehrfach vergeben, denn im ARM Prozessor gibt es unterschiedliche Prozessor-Modi und f\"ur ein Gro\ss teil dieser Modi stellt der Prozessor f\"ur R13 und R14 neue Register zur Verf\"ugung. Das spielt dann eine wichtige Rolle, wenn man unterschiedliche Stacks f\"ur die Modi aufbauen muss.
 \section{Prozessor Modus}
-Der ARM926EJ-S stellt sieben unterschiedliche Modi bereit in der sich der Prozessor befinden kann. Jeder dieser Modi kann man per Programmcode betreten oder durch eine Exception. 
+Der ARM926EJ-S stellt sieben unterschiedliche Modi bereit, in der sich der Prozessor befinden kann. Jeden dieser Modi kann man per Programmcode oder durch einen Interrupt betreten. 
 \begin{dinglist}{227}
-	\item{\textbf{User} \\ Das ist der Modus in dem alle Benutzerprogramme laufen. Sie haben keinen direkten Zugriff auf die Kernel-Routinen, sondern m\"ussen daf\"ur Trap-Instruktionen benutzen.}
-	\item{\textbf{FIQ(extra R8-R14) }\\ Dieser Modus wird nur von sehr wenigen Interrupts betreten. Das sind die Interrupts die eine sehr hohe Priorit\"at haben und umgehend von dem Prozessor behandelt werden m\"ussen.}
-	\item{\textbf{IRQ(extra R13-R14)}\\ Alle Standard Interrupts wie Tastatureingabe und andere die darauf konfiguriert werden, landen in diesem Modus. Routinen in diesem Modus k\"onnen in den User-Modus wechseln um User-Programme auszuf\"uhren.}
-	\item{\textbf{Supervisor(extra R13-R14)} \\ Dieser Modus ist ausschlie\ss lich f\"ur Trap-Routinen reserviert. Das bedeutet alle Instruktionen die von einem Userprogramm aufgerufen wurden um Kernel-Methoden auszuf\"uhren.}
-	\item{\textbf{Abort(extra R13-R14)}\\ Abort ist der Modus in den der Prozessor f\"allt wenn entweder eine Instruktion aufgrund eines Fehlers abgebrochen werden muss oder ein Fehler beim Abruf einer Speicherstelle auftritt.}
-	\item{\textbf{Undefined(extra R13-R14)}\\ Dieser Modus wird nur dann betreten sofern der ARM-Prozessor eine Instruktion von einem Co-Prozessor anfordert dieser aber nicht reagiert.}
-	\item{\textbf{System} \\ Dieser Modus ist nur f\"ur den Kernel und kein User-Programm darf diesen betreten.}
+	\item{\textbf{User} \\ Das ist der Modus, in dem alle Benutzerprogramme laufen. Sie haben keinen direkten Zugriff auf die Kernel-Routinen, sondern m\"ussen daf\"ur Trap-Instruktionen benutzen.}
+	\item{\textbf{FIQ(extra R8-R14) }\\ Dieser Modus wird nur von sehr wenigen Interrupts betreten. Das sind die Interrupts, die eine sehr hohe Priorit\"at haben und umgehend von dem Prozessor behandelt werden m\"ussen.}
+	\item{\textbf{IRQ(extra R13-R14)}\\ Alle Standard Interrupts, wie Tastatureingabe und andere, die darauf konfiguriert werden, landen in diesem Modus. Routinen in diesem Modus k\"onnen in den User-Modus wechseln, um User-Programme auszuf\"uhren.}
+	\item{\textbf{Supervisor(extra R13-R14)} \\ Dieser Modus ist ausschlie\ss lich f\"ur Trap-Routinen reserviert. Das bedeutet, alle Instruktionen, die von einem Userprogramm aufgerufen wurden, um Kernel-Methoden auszuf\"uhren.}
+	\item{\textbf{Abort(extra R13-R14)}\\ Abort ist der Modus, in den der Prozessor f\"allt, wenn entweder eine Instruktion aufgrund eines Fehlers abgebrochen werden muss oder ein Fehler beim Abruf einer Speicherstelle auftritt.}
+	\item{\textbf{Undefined(extra R13-R14)}\\ Dieser Modus wird nur dann betreten, sofern der ARM-Prozessor eine Instruktion von einem Co-Prozessor anfordert, dieser aber nicht reagiert.}
+	\item{\textbf{System} \\ Dieser Modus ist nur f\"ur den Kernel. Kein User-Programm darf diesen betreten.}
 \end{dinglist}
-Der System-Mode ist ein spezieller Modus. Dieser wird \"uber keinen Interrupt ausgel\"ost. Er ist deshalb vorhanden weil das Betriebssytem ihn benutzt um Betriebssytem relevante Resourcen zu benutzen. Weiterhin benutzt dieser Modus die gleichen Register wie der User-Modus.
+Der System-Mode ist ein spezieller Modus. Dieser wird \"uber keinen Interrupt ausgel\"ost. Er ist deshalb vorhanden, weil das Betriebssytem ihn benutzt, um Betriebssytem-relevante Resourcen zu benutzen. Weiterhin verf\"ugt dieser Modus die gleichen Register wie der User-Modus.
+\section{Interrupt-Controller}
+Der ARM926EJ-S besitzt einen speziellen Interrupt-Controller, den sogenannten \textit{Vectored Interrupt Controller - VIC}. Das ist eine Hardwarekomponente, die ein System zwischen Interrupts und dem Betriebssystem darstellt. Jede Hardware muss auf einem Chip an eine bestimmte Adresse gelegt werden. F\"ur den VIC gibt es folgende Spezifikation:
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.7]{common/processor-vic.png}\\
+\footnotesize\textbf{Quelle:}\parencite[224]{archManI}
+\caption{VIC Register}
+\end{figure}
+\noindent
+Der Entwickler hat nun die M\"oglichkeit, diese Adresse programmatisch anzusteuern, um Informationen aus dem VIC zu erhalten. Die f\"ur dieses Projekt wichtigsten Register sind Folgende:
+\begin{dinglist}{227}
+	\item{\textbf{IRQ/FIQ Status Register - 0x10140000/0x10140003}}\\
+	Mit diesem Register kann ermittelt werden, wie der aktuelle Status eines IRQ/FIQ ist.
+	\item{\textbf{Select Register - 0x01014000C}} \\
+	Mit diesem Register kann bestimmt werden , welcher Interrupt ein IRQ oder FIQ sein soll.
+	\item{\textbf{Interrupt enable register - 0x10140010}} \\
+	Gibt an, ob ein bestimmter IRQ/FIQ von dem VIC beachtet werden soll.
+	\item{\textbf{Interrupt enable clear register - 0x10140014}}\\
+	Mit diesem Register kann ein Interrupt nach Ausl\"osung geleert werden.
+	\item{\textbf{Vector address register - 0x10140030}}\\
+	In dieses Register schreibt der VIC die Adresse der Interrupt Service Routine des momentan ausgel\"osten Interrupts.
+	\item{\textbf{Vector address register 0 - 15 - 0x10140100-0x1014013C}}\\
+	In diese Register m\"ussen die Adressen von den Interrupt Service Routinen geschrieben werden, die f\"ur diesen Interrupt zust\"andig sind.
+	\item{\textbf{Vector control register 0 - 15 - 0x10140200-0x1014023C}}\\
+	In diese Register muss man \"aquivivalent zu den 'Vector address registern' die Quelle des Interrupts und, ggf. ob der Interrupt aktiviert werden soll, schreiben.
+\end{dinglist}

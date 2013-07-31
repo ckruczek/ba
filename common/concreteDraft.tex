@@ -1,5 +1,5 @@
 \section{Einleitung}
-Die Entwicklung von \mops erfolgte in mehreren Schritten. Wichtige Zwischenstopps waren hier der Startprozess, die Exceptionhandler, der Interrupt-Controller, die Interrupt-Serviceroutinen und das Threadmanangment. Jeder dieser Punkte bedurfte ein einzelne Entwurfsphase auf die jetzt genauer eingegangen werden.
+Die Entwicklung von \mops erfolgte in mehreren Schritten. Wichtige Zwischenstopps waren hier der Startprozess, die Interrupthandler, der Interrupt-Controller, die Interrupt-Service-Routinen und das Threadmanagment. Jeder dieser Punkte bedurfte einer einzelnen Entwurfsphase, auf die jetzt genauer eingegangen wird.
 \section{Startmechanismus}
 \label{e1:start}
 Der Startprozess unterteilt sich in drei Schritte:
@@ -87,7 +87,7 @@ Sobald der Interrupt ausgel\"ost wurde behandelt der Controller diesen und leite
 \newpage
 \section{Syscalls}
 Neben den IRQ und FIQ spielen die Syscall auch noch eine sehr wichtige Rolle. Im Rahmen der ARM-Architektur wurden die Syscalls mit dem Namen \textit{Software Interrupts} bezeichnet. Sicherlich ist der Name Syscalls oder Traps gel\"aufiger. Um aber konsitent zu bleiben, wird im laufenden der Name Software Interrupt(SWI) verwendet.\\
-Ein SWI ist ein Interrupt der nicht im Kernel-Modus l\"auft aber Kernel-Routinen aufrufen darf. Das ist dann sinnvoll, wenn ein User-Programm Zugriff auf eine Kernel-Routine (wie das Schreiben auf die Konsole) ben\"otigt. Wie in Abbildung \ref{draft:excptionTable} zu erkennen ist, wird bei einem SWI-Interrupt die ARM\_swi Routine angsprungen. Diese Routine leitet den Interrupt-Request an eine weitere Komponente weiter die schematisch wie folgt aussieht.
+Ein SWI ist eine Instruktuin die nicht im Kernel-Modus l\"auft aber Kernel-Routinen aufrufen darf. Das ist dann sinnvoll, wenn ein User-Programm Zugriff auf eine Kernel-Routine (wie das Schreiben auf die Konsole) ben\"otigt. Wie in Abbildung \ref{draft:excptionTable} zu erkennen ist, wird bei einem SWI-Interrupt die ARM\_swi Routine angsprungen. Diese Routine leitet den Interrupt-Request an eine weitere Komponente weiter die schematisch wie folgt aussieht.
 \begin{figure}[H]
 	\begin{center}	
 	\caption{SWI-Handler}
