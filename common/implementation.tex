@@ -2,7 +2,7 @@
 Bei der Entwicklung von \mops mussten einige wichtige Entscheidung bez\"uglich der Entwicklungs- wie auch Emulationsumgebung getroffen werden. Im folgenden werden diese Entscheidungen von allen Gesichtspunkten beleuchtet. Neben diesen Aspekten gibt es in diesem Kapitel einen tiefen Einblick in die Implementation von \mops. 
 
 \section{Entwicklungsumgebung}
-Mit der Entscheidung ein Mini-Betriebssystem zu programmieren stellt sich nat\"urlich auch die Frage mit welchen Werkzeugen man den Code entwickelt. Zur Entwicklung von ARM-basierten Code kann die Entwicklungsumgebung Eclipse\footnote{\url{http://www.eclipse.org/}}  genutzt werden. Dennoch wurde sich f\"ur den konservativen Weg entschieden und die Entwicklung l\"auft seit her mit dem Linux-integrierten Editor \textit{vim}. Die Vorteile gegen\"uber einer Integrierten Entwicklungsumgebung sind die folgenden: \\\\
+Mit der Entscheidung ein Mini-Betriebssystem zu programmieren stellt sich nat\"urlich auch die Frage mit welchen Werkzeugen man den Code entwickelt. Zur Entwicklung von ARM-basierten Code kann die Entwicklungsumgebung Eclipse\footnote{\url{http://www.eclipse.org/}}  genutzt werden. Dennoch wurde sich f\"ur den konservativen Weg entschieden und die Entwicklung l\"auft seither mit dem Linux-integrierten Editor \textit{vim}. Die Vorteile gegen\"uber einer Integrierten Entwicklungsumgebung sind die folgenden: \\\\
 \textbf{Vorteile:}
 \begin{dinglist}{227}
 	\item{\textbf{Schnelligkeit}}\\
@@ -59,12 +59,21 @@ In der main Routine gibt es noch eine wichtige Methode die dazu dient die Adress
 Hier sieht man eindeutig wie an die Stellen \texttt{0x24 - 0x3c} die passenden Handler der Interrupts geschrieben werden. 
 \end{dinglist}
 \end{dinglist} 
+\section{Ger\"ate}
+Da die Konfiguration der Ger\"ate fast immer gleich ist wird im folgenden nur die Konfiguration des Timers gezeigt. \\
+F\"ur den Timer wurde sich aus dem Manuel\parencite[vgl. Tabelle 3-1][34]{timerRef} bedient und folgende Struktur entwickelt:
+\lstinputlisting[language=C,firstline=11,caption={Timer Struktur}]{mops/mops-master/include/devices/timer.h} 
+Diese Struktur wurde, \"uber das Linker-Script an eine vordefinierte Stelle gesetzt. Diese Adresse ist \texttt{0x101E2000}\parencite[vgl. Tabelle 4-72][262]{archManI}. Im Linker-Script ist dann direkt erkennbar das diese Adresse auf eine globale Variable, f\"ur den Timer, gemappt wurde.
+\lstinputlisting[language=C,firstline=56,lastline=57,caption={Linker Konfiguration des Timer}]{mops/mops-master/link.ld}
+Weiterhin wurden Funktionen entwickelt mit denen man den Timer initial  konfigurieren, Interrupts zur\"ucksetzen und den Scheduler anspringen, kann.
+\lstinputlisting[language=C,firstline=10,caption={Konfigurationsmethoden des Timers}]{mops/mops-master/core/devices/timer.c}
+Die Funktion \texttt{init\_timer} wird von der \texttt{main}-Funktion aufgerufen um den Timer initial zu konfigurieren.
 \section{Interrupt-Controller}
 Nachdem alle Interrupthandler gemappt wurden startet eine neue Methode, die die den Interrupt-Controller konfiguriert. Doch ehe man den Controller konfigurieren kann bedarf es eine Menge vorarbeit. Angefangen davon eine passende Struktur f\"ur den Controller zu erstellen. Auf Basis der Definition in \cite[35]{vic} kann man folgende Struktur definiern.
 \lstinputlisting[language=C,firstline=24,lastline=48,caption={VIC}]{mops/mops-master/include/system/vic.h}
 Weiter geht es mit der Definition einer globalen Variable, der eine fixe Adresse(\texttt{0x10140000} \parencite[vgl. Tabelle 4-37][223]{archManI}) im RAM zugewiesen wird. Somit ist es m\"oglich dass die Struktur exakt auf die Stelle des VIC im ARM926EJ-S gemappt werden kann (Code-Beispiel \ref{imp:vicMapping}). 
 \lstinputlisting[language=C,label=imp:vicMapping,firstline=52,lastline=53,caption={VIC Mapping}]{mops/mops-master/link.ld}
-Jetzt sind alle Vorbedingungen geschaffen um den Controller zu konfigurieren. In der Abbildung \ref{draft:vicSample} in E2 des Entwurf kann man erkennen welche Register man konfigurieren muss. Beispielhaft ist das in dem Code-Beispiel  \ref{impl:vicSample} zu erkennen.
+Jetzt sind alle Vorbedingungen geschaffen um den Controller zu konfigurieren. In der Abbildung \ref{draft:vicSample} des Entwurfs kann man erkennen welche Register man konfigurieren muss. Beispielhaft ist das in dem Code-Beispiel  \ref{impl:vicSample} zu erkennen.
 \lstinputlisting[language=C,label=impl:vicSample,firstline=29,lastline=46,caption={VIC Konfigurations Beispiel}]{mops/mops-master/core/devices/vic.c}
 Mit der f\"unften Zeile definiert man die Interrupt-Service Routine f\"ur den darauf folgenden Interrupt. In dem Controll-Register in Zeil sechs wird bestimmt welche Quelle der Interrupt hat und in Zeile acht wird der Timer-Interrupt als FIQ geschalten und abschlie\ss enden wird der Interrupt aktiviert.
 \section{Interrupt Service Routinen}
@@ -110,7 +119,7 @@ Nachdem der Thread erfolgreich in den RAM geladen wurde war es an der Zeit das T
 
 Mit diesem Entwurf konnte nun ein rudiment\"arer Thread erzeugt werden. Hierzu musste die Start-Adresse, End-Adresse, Stackpointer und der Programmcounter gesetzt werden. Das war die Aufgabe der Methode die das Threadlayout erzeugt. Folgende Methode erf\"ullt genau diese Aufgabe:
 \lstinputlisting[language=C, caption={Threadlayout erstellen}]{mops/mops-master/core/scheduler/thread.c}
-Neben der Aufgabe dem Thread die passenden Start-, End-, Stackpointer- und Programmconuterwerte zuzuweisen, f\"ugt die Methode zudem noch den Thread in eine globale Tabelle ein. In den Zeilen 23-29 kann man erkennen wie die Adressen zugewiesen werden.
+Neben der Aufgabe dem Thread die passenden Start-, End-, Stackpointer- und Programmconuterwerte zuzuweisen, f\"ugt die Methode zudem noch den Thread in eine globale Tabelle ein. In den Zeilen 26-29 kann man erkennen wie die Adressen zugewiesen werden.
 \newpage
 \subsection{Thread Generierung}
 All diese Schritte sind notwendig um einen Thread zu generieren. Der n\"achste logische Schritt ist jetzt den Thread ins Leben zu rufen. Das geschieht in der \textbf{ersten} Version \"uber folgende Assembler-Routine:

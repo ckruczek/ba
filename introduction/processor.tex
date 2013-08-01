@@ -1,5 +1,5 @@
 \section{Einleitung}
-Die Firma ARM bietet eine breite Palette von Prozessoren, hierbei ist zu sagen das im Laufe der Zeit verschiedene Versionen, wie ARMv1-ARMv8, in Betrieb waren. Diese Versionen beziehen sich nicht auf einen speziellen Prozessor sondern definieren eine Spezifikation auf deren Basis ein Prozessor, wie f\"ur diese Bachelorarbeit der ARM926EJ-S in der Version ARMv5. F\"ur die Bachelorarbeit wurde die ARMv5 gew\"ahlt weil diese Prozessoren in vielen Handheld verbaut werden und im gegenteil dazu die Rechenkraft eines ARMv7 nicht ben\"otigt wurde.
+Die Firma ARM bietet eine breite Palette von Prozessoren, hierbei ist zu sagen das im Laufe der Zeit verschiedene Versionen, wie ARMv1-ARMv8, in Betrieb waren. Diese Versionen beziehen sich nicht auf einen speziellen Prozessor sondern definieren eine Spezifikation auf deren Basis ein Prozessor, wie f\"ur diese Bachelorarbeit der ARM926EJ-S in der Version ARMv5, entstand. F\"ur die Bachelorarbeit wurde die ARMv5 gew\"ahlt weil diese Prozessoren in vielen Handheld verbaut werden und im Gegenteil dazu die Rechenkraft eines ARMv7 nicht ben\"otigt wurde.
 \begin{table}[h!]
 \centering
 \begin{tabular}{|l|c|c|}
@@ -19,13 +19,13 @@ ARMv8 (2014) & ARM Cortex-A50 & Mobilefunktger\"ate, Tablets \\ \hline
 \end{table}
 \newpage
 \section{RISC- vs CISC-Prozessoren}
-Der Begriff ARM bedeutet \textit{Advanced RISC Machine}. Hier muss jedoch ein weiterer Begriff herausgezogen werden, RISC. RISC bedeutet \textit{Reduced Instruction Set Computer}, der Begriff \textit{Reduced} bezieht sich jedoch nicht auf einen kleineren Instruktionssatz sondern mehr auf die Komplexit\"at der Instruktionen selbst. Die Instruktionen bei einer RISC Maschine sind wesentlicher einfacher als die einer CISC. So ist es deshalb m\"oglich das Chipdesign zu vereinfachen. Durch das einfachere Chipdesign k\"onnen mehr Register auf den Chip gebracht werden und die Performance von Operationen ist h\"oher. Die Daten k\"onnen in  Register geladen und die Performanceintensiven Speicherzugriffe reduziert werden. Daraus l\"asst sich doch schlie\ss en das sich RISC eigentlich gegen\"ueber CISC auf dem Markt h\"atte durchsetzen m\"ussen. Doch das war nicht so. Warum? Tanenbaum hat dazu in seinem Buch \"uber \textit{Structured computer organisation} folgende geschrieben: 
+Der Begriff ARM bedeutet \textit{Advanced RISC Machine}. Hier muss jedoch ein weiterer Begriff herausgezogen werden: RISC. RISC bedeutet \textit{Reduced Instruction Set Computer}, der Begriff \textit{Reduced} bezieht sich jedoch nicht auf einen kleineren Instruktionssatz sondern mehr auf die Komplexit\"at der Instruktionen selbst. Die Instruktionen bei einer RISC Maschine sind wesentlicher einfacher als die einer CISC. Das bedeutet z.B. das eine RISC-Maschine nur Speicher-Register Operationen durchf\"uhrt, sowie Berechnungen nur auf Registern und nicht im Speicher stattfindet. So ist es deshalb m\"oglich das Chipdesign zu vereinfachen. Durch das einfachere Chipdesign k\"onnen mehr Register auf den Chip gebracht werden und die Performance von Operationen ist h\"oher. Die Daten k\"onnen in  Register geladen und die Performanceintensiven Speicherzugriffe reduziert werden. Daraus l\"asst sich doch schlie\ss en das sich RISC eigentlich gegen\"ueber CISC auf dem Markt h\"atte durchsetzen m\"ussen. Doch das war nicht so. Warum? Tanenbaum hat dazu in seinem Buch \"uber \textit{Structured computer organisation} folgendes geschrieben: 
 \begin{quote}
 \blockquote{\textit{First of all, there is the issue of backward compatibility and the billions of
 dollars companies have invested in software for the Intel line. Second, surpris-
-ingly, Intel has been able to employ the same ideas even in aCISC architecture.}}
+ingly, Intel has been able to employ the same ideas even in a CISC architecture.}}
 \end{quote}\parencite[80]{tane:sco} \\\\
-Im Gegenteil dazu stehen die CISC Maschinen - \textit{Complex Instruction Set Computer}. Diese Familie der Computer ist die wohl am weitesten verbreitete Technologie am Markt. Chipdesigner wie Intel und AMD bauen zum gro\ss teil diese Architekturen. Ein CISC hat im Gegenteil zu einem RISC ein weitaus kleineren Instruktionssatz, aber daf\"ur ist die Komplexit\"at h\"oher. Dadurch wird erreicht, dass mit weniger Befehlen umfangreiche Operationen durchgef\"uhrt werden k\"onnen. Der Nachteil dabei ist jedoch das die Performance, der Befehlsausf\"uhrung, geringer als bei einem RISC ausfallen kann.
+Im Gegenteil dazu stehen die CISC Maschinen - \textit{Complex Instruction Set Computer}. Diese Familie der Computer ist die wohl am weitesten verbreitete Technologie am Markt. Chipdesigner wie Intel und AMD bauen zum Gro\ss teil diese Architekturen. Ein CISC hat im Gegenteil zu einem RISC ein weitaus kleineren Instruktionssatz, aber daf\"ur ist die Komplexit\"at h\"oher. Dadurch wird erreicht, dass mit weniger Befehlen umfangreichere Operationen durchgef\"uhrt werden k\"onnen. Der Nachteil dabei ist jedoch, dass die Performance der Befehlsausf\"uhrung, geringer als bei einem RISC ausfallen kann.
 \begin{table}[h!]
 \centering
 \begin{tabular}[h!]{|p{4cm}|p{4cm}|p{5cm}|}
@@ -43,9 +43,10 @@ Im Gegenteil dazu stehen die CISC Maschinen - \textit{Complex Instruction Set Co
 \\
 \noindent
 Fazit dieses Vergleiches ist dass, beide Architekturen ihre Da-Seins Berechtigung in der aktuellen Technologischen Welt haben. Beide Versionen bringen Vor- und Nachteile mit sich, aber einen echten Gewinner gibt es in dem Spiel nicht. CISC machen sich viele Mechanismen der RISC zu nutze und n\"ahern sich ihnen so immer mehr an. Jedoch wird sich RISC niemals in der Welt der Heim-Computer durchsetzen aber immer Vorreiter im Bereich Embedded Systemen bleiben.
+\newpage
 \section{ARM926EJ-S}
-Betriebssysteme lassen sich auf jeder Prozessorarchitektur entwickeln die man sich vorstellen kann. Die Wahl auf den ARM926EJ-S fiel aufgrund diverser Recherchen. Aufgrund der Tatsache das es f\"ur die g\"angigen Intel und AMD Prozessoren bereits weitverbreitete Betriebssysteme gibt fiel die Wahl im vorhinein nicht auf diese Art.\\
-Nach dem klar war wo ARM-Prozessoren eingesetzt werden, wie z.B. in Druckern, Handys, Tablets und vielen mehr, fiel die Entscheidung auf diesen Prozessor. Zudem kommt hinzu es gibt momentan noch nicht so viele Betriebssysteme wie bei den anderen Systemen. Vorteile sind z.B.
+Betriebssysteme lassen sich auf jeder Prozessorarchitektur entwickeln die man sich vorstellen kann. Die Wahl auf den ARM926EJ-S fiel aufgrund diverser Recherchen. Aufgrund der Tatsache das es f\"ur die g\"angigen Intel und AMD Prozessoren bereits weitverbreitete Betriebssysteme gibt fiel die Wahl nicht auf diese Art von Prozessoren.\\
+Nach dem klar war wo ARM-Prozessoren eingesetzt werden, wie z.B. in Druckern, Handys, Tablets und vielen mehr, fiel die Entscheidung auf diesen Prozessor. Zudem kommt hinzu es gibt momentan noch nicht so viele Betriebssysteme wie bei den anderen Systemen.\\ Vorteile sind z.B.:
 \begin{dinglist}{227}
 	\item{\textbf{Energieeffizienz}}
 	\item{\textbf{Schnelligkeit}}
@@ -53,14 +54,14 @@ Nach dem klar war wo ARM-Prozessoren eingesetzt werden, wie z.B. in Druckern, Ha
 	\item{\textbf{minimale Bauweise.}}
 \end{dinglist}
 \section{Register}
-Der ARM926 Prozessor ist ein 32-Bit RISC Prozessor. Dieser Prozessor hat eine Gesamtzahl von 37 Registern\parencite[vgl.][44\psqq]{archManI}, wobei 30 dieser Register den allgemeinen Zwecken und 6 als Statusregister dienen. Von diesen hier explizit die Register \textbf{R0-R7} und \textbf{R13-R15} zu erw\"ahnen sind. \textbf{R0-R7} sind tats\"alich allgemein verwendbare Register, die unabh\"angig von dem aktuellen Prozessormodus sind, \textbf{R13} ist der \textit{Stackpointer}, \textbf{R14} stellt das \textit{Linkregister} dar und \textbf{R15} bezeichnet den \textit{Program Counter}.
+Der ARM926EJ-S Prozessor ist ein 32-Bit RISC Prozessor. Dieser Prozessor hat eine Gesamtzahl von 37 Registern\parencite[vgl.][44\psqq]{archManI}, wobei 30 dieser Register den allgemeinen Zwecken und 6 als Statusregister dienen. Von diesen hier explizit die Register \textbf{R0-R7} und \textbf{R13-R15} zu erw\"ahnen sind. \textbf{R0-R7} sind tats\"alich allgemein verwendbare Register, die unabh\"angig von dem aktuellen Prozessormodus sind, \textbf{R13} ist der \textit{Stackpointer}, \textbf{R14} stellt das \textit{Linkregister} dar und \textbf{R15} bezeichnet den \textit{Program Counter}.
 \begin{dinglist}{227}
 	\item{\textbf{Stackpointer}}\\
-	Zeigt auf die 'Top-Of-Stack' Adresse
+	Zeigt auf die 'Top-Of-Stack' Adresse.
 	\item{\textbf{Linkregister}}\\
-	Zeigt auf den aktuell geretteten Programmcounter bevor eine Routine betreten wird
+	Zeigt auf den aktuell geretteten Programmcounter bevor eine Routine betreten wird.
 	\item{\textbf{Programmcounter}}\\
-	Zeigt auf die n\"achste Instruktion
+	Zeigt auf die n\"achste Instruktion.
 \end{dinglist}
 \begin{figure}[H]
 \center
@@ -69,8 +70,9 @@ Der ARM926 Prozessor ist ein 32-Bit RISC Prozessor. Dieser Prozessor hat eine Ge
 \caption{ARM926EJ-S Register}
 \end{figure}
 Teilweise sind die Register mehrfach vergeben, denn im ARM Prozessor gibt es unterschiedliche Prozessor-Modi und f\"ur ein Gro\ss teil dieser Modi stellt der Prozessor f\"ur R13 und R14 neue Register zur Verf\"ugung. Das spielt dann eine wichtige Rolle, wenn man unterschiedliche Stacks f\"ur die Modi aufbauen muss.
+\newpage
 \section{Prozessor Modus}
-Der ARM926EJ-S stellt sieben unterschiedliche Modi bereit, in der sich der Prozessor befinden kann. Jeden dieser Modi kann man per Programmcode oder durch einen Interrupt betreten. 
+Der ARM926EJ-S stellt sieben unterschiedliche Modi bereit, in der sich der Prozessor befinden kann. Jeden dieser Modi kann per Programmcode oder durch einen Interrupt betreten werden:
 \begin{dinglist}{227}
 	\item{\textbf{User} \\ Das ist der Modus, in dem alle Benutzerprogramme laufen. Sie haben keinen direkten Zugriff auf die Kernel-Routinen, sondern m\"ussen daf\"ur Trap-Instruktionen benutzen.}
 	\item{\textbf{FIQ(extra R8-R14) }\\ Dieser Modus wird nur von sehr wenigen Interrupts betreten. Das sind die Interrupts, die eine sehr hohe Priorit\"at haben und umgehend von dem Prozessor behandelt werden m\"ussen.}
@@ -95,15 +97,15 @@ Der Entwickler hat nun die M\"oglichkeit, diese Adresse programmatisch anzusteue
 	\item{\textbf{IRQ/FIQ Status Register - 0x10140000/0x10140003}}\\
 	Mit diesem Register kann ermittelt werden, wie der aktuelle Status eines IRQ/FIQ ist.
 	\item{\textbf{Select Register - 0x01014000C}} \\
-	Mit diesem Register kann bestimmt werden , welcher Interrupt ein IRQ oder FIQ sein soll.
+	Mit diesem Register kann bestimmt werden, ob ein Interrupt als IRQ oder FIQ ausgel\"ost werden soll.
 	\item{\textbf{Interrupt enable register - 0x10140010}} \\
 	Gibt an, ob ein bestimmter IRQ/FIQ von dem VIC beachtet werden soll.
 	\item{\textbf{Interrupt enable clear register - 0x10140014}}\\
-	Mit diesem Register kann ein Interrupt nach Ausl\"osung geleert werden.
+	Mit diesem Register kann ein Interrupt nach Ausl\"osung zur\"uckgesetzt werden.
 	\item{\textbf{Vector address register - 0x10140030}}\\
 	In dieses Register schreibt der VIC die Adresse der Interrupt Service Routine des momentan ausgel\"osten Interrupts.
-	\item{\textbf{Vector address register 0 - 15 - 0x10140100-0x1014013C}}\\
+	\item{\textbf{Vector address register[0-15] - 0x10140100-0x1014013C}}\\
 	In diese Register m\"ussen die Adressen von den Interrupt Service Routinen geschrieben werden, die f\"ur diesen Interrupt zust\"andig sind.
-	\item{\textbf{Vector control register 0 - 15 - 0x10140200-0x1014023C}}\\
+	\item{\textbf{Vector control register[0-15] - 0x10140200-0x1014023C}}\\
 	In diese Register muss man \"aquivivalent zu den 'Vector address registern' die Quelle des Interrupts und, ggf. ob der Interrupt aktiviert werden soll, schreiben.
 \end{dinglist}
