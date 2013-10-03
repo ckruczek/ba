@@ -99,7 +99,7 @@ In der aktuellen Fassung von \mops ist nur der SWI-Handler f\"ur den \texttt{Pri
 Der Parameter f\"ur den beschriebenen Syscall besteht im Gro\ss en und Ganzen nur aus einem Parameter: Der Charakter, der auf der Console ausgegeben werden soll.
 \newpage
 \section{Threadmanagment}
-Das Threadmanagment stellt die Verwaltung der Threads in einem System dar. Das bedeutet: Wie wechseln sich die Threads ab und wodurch k\"onnen sie unterbrochen werden . Wie diese Prozesse miteinander arbeiten, soll in der folgenden Grafik verdeutlicht werden.
+Das Threadmanagment stellt die Verwaltung der Threads in einem System dar. Das bedeutet: Wie wechseln sich die Threads ab und wodurch k\"onnen sie unterbrochen werden. Wie diese Prozesse miteinander arbeiten, soll in der folgenden Grafik verdeutlicht werden.
 \begin{figure}[H]
 	\begin{center}	
 	\caption{\"Ubersicht Threadmanagement}
@@ -130,7 +130,7 @@ Diese Struktur wird zu Begin des Betriebssystem im RAM hergestellt. Zuvor muss j
 Nachdem diese RAM-Disk erstellt wurde, kann \mops diese im Betrieb laden und den Assemblercode an die passende Position im RAM laden. Neben den Informationen \"uber den Assembler-Code enth\"alt die RAM-Disk unter anderem die Information, wieviel Bytes an Stack f\"ur den Prozess reserviert werden. Dieser Bereich wird dann beim Kopieren vorerst nur mit Nullen aufgef\"ullt. \\
 Um die M\"oglichkeit offen zu halten mehr als einen Prozess in den RAM zu laden, stellt die RAM-Disk eine weitere Tabelle zur Verf\"ugung, in welcher die Informationen zur L\"ange eines jeden einzelnen Threads eingetragen sind. F\"ur Abbildung \ref{ramdisk} bedeutet das, dass der erste Thread eine L\"ange von 11 aufweist und ab dem 12. Eintrag der n\"achste Thread beginnt.
 \subsection{Scheduling}
-Sobald der Thread in den RAM geladen wurde, kann das Betriebssytem jetzt den ersten dieser Prozesse starten. Dieser Start manifestiert sich dadurch das der Stackpointer vom Kernel auf den Start-Bereich des neuen Stacks umgemappt werden muss. Danach werden alle Register auf dem neuen Stack gesichert und es erfolgt ein Sprung in die Routine die zuletzt aus der RAM-Disk geladen wurde. 
+Sobald der Thread in den RAM geladen wurde, kann das Betriebssytem jetzt den ersten dieser Prozesse starten. Dieser Start manifestiert sich dadurch, dass der Stackpointer vom Kernel auf den Start-Bereich des neuen Stacks umgemappt werden muss. Danach werden alle Register auf dem neuen Stack gesichert und es erfolgt ein Sprung in die Routine, die zuletzt aus der RAM-Disk geladen wurde. 
 \begin{figure}[H]
 	\begin{center}	
 	\caption{RAM-Disk}
@@ -139,25 +139,25 @@ Sobald der Thread in den RAM geladen wurde, kann das Betriebssytem jetzt den ers
 	\end{center}
 \end{figure}
 \noindent
-In Grafik \ref{scheduler} wird veranschaulicht wie der Mechanismus, des Thread-Umschalten, in \mops umgesetzt wurde. Hier sieht man das aller 100ms der Timer-Interrupt ausgel\"ost wird und dieser startet den Scheduler. Der Scheduler sucht dann den n\"achsten wartenden Prozess, hier dunkelngrau, raus und schaltet diesen ein. Der andere, momentan hellgraue, wird dann in den wartenden Status geschalten.
-Es gibt einige bekannte Scheduling-Verfahren in modernen Betriebssystemen, viele dieser Verfahren kooperieren auch unter bestimmten Umst\"anden um die beste Performance herauszuholen. Hier sind ein paar der wichtigsten Verfahren etwas n\"aher beschrieben:
+In Grafik \ref{scheduler} wird veranschaulicht wie der Mechanismus, des Thread-Umschaltens, in \mops umgesetzt wurde. Hier sieht man, dass aller 100ms der Timer-Interrupt ausgel\"ost wird und dieser  den Scheduler startet. Der Scheduler sucht dann den n\"achsten wartenden Prozess - hier dunkelgrau - heraus und schaltet diesen ein. Der andere - hier hellgrau - wird dann in den wartenden Status geschalten.
+Es gibt einige bekannte Scheduling-Verfahren in modernen Betriebssystemen. Viele dieser Verfahren kooperieren auch unter bestimmten Umst\"anden, um die beste Performance herauszuholen. Hier sind ein paar der wichtigsten Verfahren etwas n\"aher beschrieben:
 \begin{dinglist}{227}
 	\item{\textbf{First-Come First-Serve}} \\
-	Dieses System kann man sich wie eine Schlange an der Post vorstellen. Prozesse werden in eine Queue\footnote{Eine weitverbreitete Datenstruktur in modernen Programmiersprachen die nach dem \textit{First-In First-Out} Prinzip funktioniert.} gepackt und von dort bearbeitet. Dieses System hat jedoch den Nachteil das lange Wartezeiten, durch Prozesse die die CPU sehr \"uberdurschnittlich lange in Anspruch nehmen, entstehen k\"onnen.\newpage
+	Dieses System kann man sich wie eine Warteschlange an der Post vorstellen. Prozesse werden in eine Queue\footnote{Eine weitverbreitete Datenstruktur in modernen Programmiersprachen die nach dem \textit{First-In First-Out} Prinzip funktioniert.} gepackt und von dort bearbeitet. Dieses System hat jedoch den Nachteil, dass lange Wartezeiten durch Prozesse, die die CPU sehr \"uberdurchschnittlich lange in Anspruch nehmen, entstehen k\"onnen.
 	\item{\textbf{Shortest-Job-First}}\\
-	W\"ahrend bei diesem Verfahren darauf abgezielt wird den Prozessen die CPU-Zeit zu \"uberlassen welche am k\"urzesten sind. Wie in \cite[189]{scheduling} geschrieben 
+	Bei diesem Verfahren wird darauf abgezielt, den Prozessen die CPU-Zeit zu \"uberlassen welche am k\"urzesten sind. Wie in \cite[189]{scheduling} geschrieben
 \begin{quote}
 	\textquote{\textit{This  algorithm associates with each process  the length of the 
 process's next CPU burst.}}
 \end{quote}
-versucht dieser Algorhythmus anhand der CPU-Bursts\parencite[vgl.][184]{scheduling} zu ermitteln wie lange ein Prozess in etwa ben\"otigen wird. Anhand dieser Informationen wird dann der n\"achste Prozess ermittelt, der an der Reihe ist.
-Sollten jedoch zwei Prozesse die gleichen CPU-Bursts haben, so wird das \textit{First-Come First-Serve} Verfahren angewendet. Der Vorteil hier ist nat\"urlich das es wesentlich optimaler, als die vorherig genannten ist, jedoch auch komplizierter zu implementieren.
+versucht dieser Algorhythmus anhand der CPU-Bursts\parencite[vgl.][184]{scheduling} zu ermitteln, wieviel Zeit ein Prozess in etwa ben\"otigen wird. Anhand dieser Informationen wird dann der n\"achste Prozess ermittelt, der an der Reihe ist.
+Sollten jedoch zwei Prozesse die gleichen CPU-Bursts haben, so wird das \textit{First-Come First-Serve} Verfahren angewendet. Der Vorteil ist nat\"urlich, dass es wesentlich optimaler als die vorherig genannten ist, jedoch auch komplizierter zu implementieren ist.
 \item{\textbf{High-Priority First}}\\
-Mit diesem Verfahren ist es m\"oglich Threads mit Priort\"aten zu versehen und anhand dieser Priorit\"aten kann der Scheduler dann den n\"achsten Thread ermitteln der die CPU-Zeit bekommt. Aber auch hier gibt es einen Nachteil. Was ist wenn alle Threads eine hohe Priorit\"at aufwei\ss en? Das bedeutet das dieses Verfahren nur in Kombination mit einem anderen Verfahren umsetzbar ist, denn es muss noch eine weitere Eigenschaft geben anhand der ein Thread ausgew\"ahlt werden kann, da sonst Probleme entstehen.
+Mit diesem Verfahren ist es m\"oglich Threads mit Priorit\"aten zu versehen und anhand dieser Priorit\"aten kann der Scheduler dann den n\"achsten Thread ermitteln, der die CPU-Zeit bekommt. Aber auch hier gibt es einen Nachteil: Was passiert wenn alle Threads eine hohe Priorit\"at aufweisen? Das bedeutet, dass dieses Verfahren nur in Kombination mit einem anderen Verfahren umsetzbar ist, denn es muss noch eine weitere Eigenschaft geben anhand der ein Thread ausgew\"ahlt werden kann.
 	\item{\textbf{Round-Robin}}\\
 	Dieses Verfahren 
 		\textquote{\textit{is designed especially for  time-
 sharing systems.}}\parencite[vgl.][194]{scheduling}
-Das bedeutet das der Algorhitmus eine kleine Zeitscheibe definiert in der der Prozess die CPU bekommt. Danach werden die Prozesse, die sich in der ``Ready-Queue'', befinden abgearbeitet und jeder bekommt f\"ur die vorher bestimmte Zeit die CPU. Diese Queue wird als eine Ring-Liste behandelt. Das hat den Effekt, dass der Scheduler immer wieder jeden Prozess kurz startet. Der Vorteil dieses Mechanismus ist das jeder Prozess gleich bewertet wird und das es relativ einfach zu implementieren ist. Jedoch bringt genau dieser Vorteil auch einen Nachteil mit sich, n\"amlich das Prozesse die eigentlich eine l\"angere Zeitscheibe br\"auchten immer warten m\"ussen bis sie wieder am Zug sind und das kann nat\"urlich zu sehr hohen Latenzen in der Ausf\"uhrung f\"uhren.
+Das bedeutet, dass der Algorhythmus eine kleine Zeitscheibe definiert, in der der Prozess die CPU bekommt. Danach werden die Prozesse, die sich in der ``Ready-Queue'' befinden abgearbeitet und jeder bekommt f\"ur die vorher bestimmte Zeit die CPU. Diese Queue wird als eine Ring-Liste behandelt. Das hat den Effekt, dass der Scheduler immer wieder jeden Prozess kurz startet. Der Vorteil dieses Mechanismus ist, dass jeder Prozess gleicherma\ss en bewertet wird und das es relativ einfach zu implementieren ist. Jedoch bringt genau dieser Vorteil auch einen Nachteil mit sich, n\"amlich, dass Prozesse, die eigentlich eine l\"angere Zeitscheibe br\"auchten, immer warten m\"ussen bis sie wieder am Zug sind. Das kann nat\"urlich zu sehr hohen Latenzen in der Ausf\"uhrung f\"uhren.
 \end{dinglist}
-Es wurden jetzt eine Reihe von Scheduling-Mechanismen vorgestellt und es musste eine Entscheidung f\"ur \mops getroffen werden. Aufgrund der einfachen Implementation, fiel die Wahl auf das \textbf{Round-Robin} Verfahren. Die Nachteile konnten f\"ur die erste Version von \mops vernachl\"assigt werden.
+Es wurden jetzt eine Reihe von Scheduling-Mechanismen vorgestellt und es musste eine Entscheidung f\"ur \mops getroffen werden. Aufgrund der einfachen Implementation fiel die Wahl auf das \textbf{Round-Robin} Verfahren. Die Nachteile konnten f\"ur die erste Version von \mops vernachl\"assigt werden.

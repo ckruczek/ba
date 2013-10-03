@@ -1,8 +1,8 @@
 \section{Einleitung}
-Bei der Entwicklung von \mops mussten einige wichtige Entscheidung bez\"uglich der Entwicklungs- wie auch Emulationsumgebung getroffen werden. Im folgenden werden diese Entscheidungen von allen Gesichtspunkten beleuchtet. Neben diesen Aspekten gibt es in diesem Kapitel einen tiefen Einblick in die Implementation von \mops. 
+Bei der Entwicklung von \mops mussten einige wichtige Entscheidungen bez\"uglich der Entwicklungs- wie auch Emulationsumgebung getroffen werden. Im Folgenden werden diese Entscheidungen von allen Gesichtspunkten beleuchtet. Neben diesen Aspekten gibt es in diesem Kapitel einen tiefen Einblick in die Implementation von \mops. 
 
 \section{Entwicklungsumgebung}
-Mit der Entscheidung ein Mini-Betriebssystem zu programmieren stellt sich nat\"urlich auch die Frage, mit welchen Werkzeugen man den Code entwickelt. Zur Entwicklung von ARM-basierten Code kann die Entwicklungsumgebung Eclipse\footnote{\url{http://www.eclipse.org/}}  genutzt werden. Dennoch wurde sich f\"ur den konservativen Weg entschieden und die Entwicklung l\"auft seither mit dem Linux-integrierten Editor \textit{vim}. Die Vorteile gegen\"uber einer Integrierten Entwicklungsumgebung sind die folgenden: \\\\
+Mit der Entscheidung, ein Mini-Betriebssystem zu programmieren, stellt sich nat\"urlich auch die Frage, mit welchen Werkzeugen man den Code entwickelt. Zur Entwicklung von ARM-basiertem Code kann die Entwicklungsumgebung Eclipse\footnote{\url{http://www.eclipse.org/}}  genutzt werden. Dennoch wurde sich f\"ur den konservativen Weg entschieden und die Entwicklung l\"auft seither mit dem Linux-integrierten Editor \textit{vim}. Die Vorteile gegen\"uber einer Integrierten Entwicklungsumgebung sind die Folgenden: \\\\
 \textbf{Vorteile:}
 \begin{dinglist}{227}
 	\item{\textbf{Schnelligkeit}}\\
@@ -10,124 +10,123 @@ Mit der Entscheidung ein Mini-Betriebssystem zu programmieren stellt sich nat\"u
 	\item{\textbf{Unabh\"angigkeit}}\\
 	Sollte die Entwicklung auf einem anderen System weitergehen, so ist es nicht notwendig IDE abh\"angige Einstellungen vorzunehmen.
 	\item{\textbf{Kontrolle}}\\
-	Viele IDEs bringen ein umfangreiches Portfolio an Funktionen mit sich, die jedoch auch Problematisch werden k\"onnen, wenn nicht mehr klar ist was f\"ur Schritte die IDE neben den eigentlich notwendigen noch durchf\"uhrt. Da \textit{vim} ein rein textbasierter Editor ist, kann man hier sicher sein das keine unklaren Sachen im Hintergrund passieren.
+	Viele IDEs bringen ein umfangreiches Portfolio an Funktionen mit sich, die jedoch auch problematisch werden k\"onnen, wenn nicht mehr klar ist, was f\"ur Schritte die IDE neben den eigentlich notwendigen noch durchf\"uhrt. Da \textit{vim} ein rein textbasierter Editor ist, kann man hier sicher sein, dass keine unklaren Prozesse im Hintergrund stattfinden.
 \end{dinglist}
-Jedoch bringt die Entwicklung ohne IDE auch Nachteile mit sich, die hier nicht au\ss en vorgelassen werden d\"urfen.\\ \\
+Jedoch bringt die Entwicklung ohne IDE auch Nachteile mit sich, die hier nicht au\ss en vor gelassen werden d\"urfen.\\ \\
 \textbf{Nachteile:}
 \begin{dinglist}{227}
 	\item{\textbf{Komplex}}\\
-	\textit{vim} ist kein Werkzeug f\"ur Anf\"anger. Die Verwendung findet auf einem sehr rudiment\"aren Level statt und es bedarf eine gewisse Zeit diese gut zu beherrschen. Herk\"ommliche IDE's, wie Eclipse, sind da wesentlich komfortabler.
+	\textit{vim} ist kein Werkzeug f\"ur Anf\"anger. Die Verwendung findet auf einem sehr rudiment\"aren Level statt und es bedarf einer gewissen Zeit diese gut zu beherrschen. Herk\"ommliche IDE's, wie Eclipse, sind da wesentlich komfortabler.
 	\item{\textbf{Unintuitiv}}\\
-	Die Benutzung eines rein textbasierten Editors, wie \textit{vim}, ist insofern Nachteilig das s\"amtliche Features einer IDE, wie Autovervollst\"andigung, Intellisense, Fehlermeldungen w\"ahrend des Schreibens etc., verloren gehen. Weiterhin kommt dazu, dass bei der Benutzung von \textit{vim}, die Navigation und Steuerung, im wie auch von dem Dokument, relativ komplex ist, sofern man es nicht gewohnt ist.
+	Die Benutzung eines rein textbasierten Editors, wie \textit{vim}, ist insofern nachteilig, dass s\"amtliche Features einer IDE, wie Autovervollst\"andigung, Intellisense, Fehlermeldungen w\"ahrend des Schreibens etc., verloren gehen. Weiterhin kommt dazu, dass bei der Benutzung von \textit{vim} die Navigation und Steuerung im wie auch von dem Dokument relativ komplex ist, sofern man es nicht gewohnt ist.
 \end{dinglist}
 
 \section{Startmechanismus}
-Der Startmechanismus ist einer der wichtigsten Prozesse eines jedem Betriebssystems. Eine gro\ss e Herausforderungen bei \mops war die Definition des Startprozess. Dies umschlie\ss t:
+Der Startmechanismus ist einer der wichtigsten Prozesse eines jeden Betriebssystems. Eine gro\ss e Herausforderung bei \mops war die Definition des Startprozesses. Dies umschlie\ss t:
 \begin{dinglist}{227}
 	\item \textbf{Was bedeutet \textit{Startprozess}?}\\ \\
-		Die Frage zur Bedeutung des Startprozess konnte sehr schnell beantwortet werden. Da keine Hardware vorlag auf der ein Knopf h\"atte gedr\"uckt werden k\"onnen verlief der Startprozess sehr unspektakul\"ar: Laden eines fertig assemblierten, kompilierten und gelinkten Kernel-Image[siehe Abbildung \ref{draft:kernelImage}] in den qemu!
+		Die Frage zur Bedeutung des Startprozesses konnte sehr schnell beantwortet werden. Da keine Hardware vorlag auf der ein Knopf h\"atte gedr\"uckt werden k\"onnen, verlief der Startprozess sehr unspektakul\"ar: Laden eines fertig assemblierten, kompilierten und gelinkten Kernel-Image[siehe Abbildung \ref{draft:kernelImage}] in den qemu!
 	\begin{lstlisting}[caption={Laden der Kerneldatei in qemu}]
 		qemu-system-arm -M versatilepb -m 128M -nographic -s -S -kernel mops.bin
 	\end{lstlisting}
 	\item \textbf{Welche Komponenten sind daran beteiligt?}\\ \\
-	Nachdem gekl\"art wurde was der Startprozess f\"ur \mops bedeutet stand dann auf dem Plan, herauszufinden welche Komponenten am Startprozess beteiligt sind und ob diese in einer definierten Reihenfolge ausgef\"uhrt werden m\"ussen. Die erste und wichtigste Komponente ist die Definition der Startadresse an welche die erste Assembler Datei geladen werden musste. 
-In dem Linkerscript\parencite{linker} wurde als Startadresse die Adresse \texttt{0x000000} gew\"ahlt, an diese Stelle wird nun der Code geladen.
+	Nachdem gekl\"art wurde was der Startprozess f\"ur \mops bedeutet, stand dann auf dem Plan herauszufinden, welche Komponenten am Startprozess beteiligt sind und ob diese in einer definierten Reihenfolge ausgef\"uhrt werden m\"ussen. Die erste und wichtigste Komponente ist die Definition der Startadresse, an welche die erste Assembler Datei geladen werden musste. 
+In dem Linkerscript\parencite{linker} wurde als Startadresse die Adresse \texttt{0x000000} gew\"ahlt. An diese Stelle wird nun der Code geladen.
 \lstinputlisting[firstline=1,lastline=18,caption={Linker-Datei}]{mops/mops-master/link.ld}
 \label{impl:linkerFile}
-Wie man in Zeile 16 und 17 erkennen kann werden im n\"achsten Schritt die \textit{startup.o} und \textit{initstacks.o} geladen. Diese Dateien stellen die Grundeinstellungen des Betriebssystem her. \\
+Wie man in Zeile 16 und 17 erkennen kann, werden im n\"achsten Schritt die \textit{startup.o} und \textit{initstacks.o} geladen. Diese Dateien stellen die Grundeinstellungen des Betriebssystems her. \\
 Um zu verdeutlichen was diese Dateien machen, folgt die \textit{startup.s} Datei.
 \lstinputlisting[language={[x86masm]Assembler},caption={Startup-Datei}]{mops/mops-master/startup/startup.s}
-In Zeile 24 sieht man den in Abbildung \ref{draft:kernelImage} (1) beschrieben Sprung in die Methode die die Interrupthandler mappt. 
-Weiterhin ist in Zeile 26 der, in Abbildung \ref{draft:kernelImage}  (2), erkennebare Sprung in die Methode die die Stacks erzeugt.
-Nicht zuletzt dann der Sprung in die Methode \texttt{main}, in Zeile 34. Somit ist der Kreislauf aus Abbildung \ref{draft:kernelImage} geschlossen.\\ \\
-Auch hier wird auf die jeweiligen Methoden eingegangen die in 
+In Zeile 24 sieht man den in Abbildung \ref{draft:kernelImage} (1) beschriebenen Sprung in die Methode, die die Interrupthandler mappt. 
+Weiterhin ist in Zeile 26 der, in Abbildung \ref{draft:kernelImage}  (2), erkennbare Sprung in die Methode, die die Stacks erzeugt.
+Nicht zuletzt erfolgt dann der Sprung in die Methode \texttt{main} in Zeile 34. Somit ist der Kreislauf aus Abbildung \ref{draft:kernelImage} geschlossen.\\ \\
+Auch hier wird auf die jeweiligen Methoden eingegangen, die in 
 \ref{e1:start} schematisch dargestellt wurden.
 \begin{dinglist}{227}
 	\item{\textbf{Interrupthandler erstellen}}\\
-	Beim Erstellen der Sprungtabelle f\"ur die Interrupts kommt es drauf an das die Sprungadresse korrekt mit den passenden Methoden f\"ur die jeweilige Interrupts bef\"ullt werden. In der Abbildung \ref{draft:excptionTable} erkennt man das die Adresse \texttt{0x00} - \texttt{0x1c} mit den passenden Assemblerbefehlen gef\"ullt werden die einen Sprung an die passende Adresse der Methode erlauben. In C wird das ganze auf folgende Art und Weise getan.	\lstinputlisting[language=C,firstline=8,lastline=9,caption={Sprungtabelle erstellen I}]{mops/mops-master/startup/vector_mapping.c}
-Wichtige Stellen in diesem Quellcode sind die Teile wo man auf die Adresse der Variable \texttt{\_\_ram\_start} zugreift. Denn das ist die Adresse \texttt{0x0000000} die im Linker-Script (Code-Ausschnitt \ref{impl:linkerFile}) definiert wurde. Sie ist deshalb so wichtig, weil die Interrupthandler nach dem von ARM definierten System bereitgestellt werden m\"ussen. Eine weitere wichtige Variable ist die \texttt{LDR\_PC\_PC}, diese beinhaltet die in Hex formatierte Assemblerroutine \texttt{LDR PC, [PC,]}. Sobald man diese Adresse mit \texttt{0x18} in eine ODER-Verkn\"upfung bringt entsteht das gewollte Ergbnis \texttt{LDR PC, [PC, \#0x18]}.
-Mit diesem Wissen kann man nun die Sprunganweisungen erstellen die das notwendige Schema widerspiegelt.
+	Beim Erstellen der Sprungtabelle f\"ur die Interrupts kommt es darauf an, dass die Sprungadresse korrekt mit den passenden Methoden f\"ur die jeweiligen Interrupts bef\"ullt werden. In der Abbildung \ref{draft:excptionTable} erkennt man, dass die Adresse \texttt{0x00} - \texttt{0x1c} mit den passenden Assemblerbefehlen gef\"ullt werden, die einen Sprung an die passende Adresse der Methode erlauben. In C wird das Ganze auf folgende Art und Weise getan.	\lstinputlisting[language=C,firstline=8,lastline=9,caption={Sprungtabelle erstellen I}]{mops/mops-master/startup/vector_mapping.c}
+Wichtige Stellen in diesem Quellcode sind die Stellen, wo man auf die Adresse der Variable \texttt{\_\_ram\_start} zugreift. Denn das ist die Adresse \texttt{0x0000000}, die im Linker-Script (Code-Ausschnitt \ref{impl:linkerFile}) definiert wurde. Sie ist deshalb so wichtig, weil die Interrupthandler nach dem von ARM definierten System bereitgestellt werden m\"ussen. Eine weitere wichtige Variable ist die \texttt{LDR\_PC\_PC}. Diese beinhaltet die in Hex formatierte Assemblerroutine \texttt{LDR PC, [PC,]}. Sobald man diese Adresse mit \texttt{0x18} in eine ODER-Verkn\"upfung bringt, entsteht das gewollte Ergbnis: \texttt{LDR PC, [PC, \#0x18]}.
+Mit diesem Wissen kann man nun die Sprunganweisungen erstellen, die das notwendige Schema widerspiegelt.
 \lstinputlisting[language=C,firstline=11,lastline=27,caption={Sprungtabelle erstellen II}]{mops/mops-master/startup/vector_mapping.c}
 	\item{\textbf{Erstellung des Stacks}}\\
-	Bei der Erstellung der Stacks f\"ur die verschiedenen Modi sind zwei Komponenten Notwendig. Zum einen das Linkerscript und hier die folgenden Zeilen:
+	Bei der Erstellung der Stacks f\"ur die verschiedenen Modi sind zwei Komponenten notwendig. Zum einen das Linkerscript und hier die folgenden Zeilen:
 	\lstinputlisting[language=C,firstline=34,lastline=50,caption={Stack erstellen I}]{mops/mops-master/link.ld}
-	Hier wird definiert an welcher Stelle die Stacks lokalisiert sind, das gibt immer der ``\textbf{.}'' an. Dieser Punkt gibt die aktuelle Stelle im RAM an, an der sich gerade der Linker beim Linken befindet. Die Zeile 2 sagt z.B. aus, dass der \_\_sys\_stack\_top eine L\"ange von 8.192 Bytes hat. Diese Zahl wurde nach Gef\"uhl gew\"ahlt. Mittels dieser Variablen haben wir wieder Zugriff auf die jeweiligen Adressen nach dem Linken, nun kommt die zweite Komponente ins Spiel, mit der wir die tats\"achlichen Stackpointer setzen.	\lstinputlisting[language=C,firstline=18,lastline=32,caption={Stack erstellen II}]{mops/mops-master/startup/initstacks.s}
-Da f\"ur die Modi \texttt{Supervisor}, \texttt{Abort}, \texttt{Undefined}, \texttt{Interrupt} und \texttt{Fast Interrupt} unterschiedliche Register f\"ur den Stackpointer belegt werden, ist es notwendig f\"ur diese Register die richtigen Adressen zu setzen. Aufgrund der Tatsache das \mops nur die Modi \texttt{System}, \texttt{Supervisor}, \texttt{Interrupt} und \texttt{Fast Interrupt} als wichtig ansieht sind nur vier Stackpointer zu setzen. Damit das korrekt von statten l\"auft, wechselt man in den jeweiligen Modus und l\"adt die Adresse aus der  Stack-Variable die im Linkerscript definiert ist.\\\\
-Sobald diese Schritte abgearbeite sind, erfolgt der Sprung(\texttt{bl main}) in die \texttt{main} Routine.
-In der main Routine gibt es noch eine wichtige Methode die dazu dient die Adressen der Interrupt-Handler in die vorherige erstellte Sprungtabelle zu mappen.
+	Hier wird definiert an welcher Stelle die Stacks lokalisiert sind. Das gibt immer der ``\textbf{.}'' an. Dieser Punkt gibt die aktuelle Stelle im RAM an, an der sich gerade der Linker beim Linken befindet. Die Zeile 2 sagt z.B. aus, dass der \_\_sys\_stack\_top eine L\"ange von 8.192 Bytes hat. Diese Zahl wurde nach Gef\"uhl gew\"ahlt. Mittels dieser Variablen haben wir wieder Zugriff auf die jeweiligen Adressen nach dem Linken. Nun kommt die zweite Komponente in das Spiel, mit der wir die tats\"achlichen Stackpointer setzen.	\lstinputlisting[language=C,firstline=18,lastline=32,caption={Stack erstellen II}]{mops/mops-master/startup/initstacks.s}
+Da f\"ur die Modi \texttt{Supervisor}, \texttt{Abort}, \texttt{Undefined}, \texttt{Interrupt} und \texttt{Fast Interrupt} unterschiedliche Register f\"ur den Stackpointer belegt werden, ist es notwendig f\"ur diese Register die richtigen Adressen zu setzen. Aufgrund der Tatsache, dass \mops nur die Modi \texttt{System}, \texttt{Supervisor}, \texttt{Interrupt} und \texttt{Fast Interrupt} als wichtig betrachtet, sind nur vier Stackpointer zu setzen. Damit das korrekt vonstatten l\"auft, wechselt man in den jeweiligen Modus und l\"adt die Adresse aus der  Stack-Variable, die im Linkerscript definiert ist.\\\\
+Sobald diese Schritte abgearbeitet sind, erfolgt der Sprung(\texttt{bl main}) in die \texttt{main} Routine.
+In der \texttt{main} Routine gibt es noch eine wichtige Methode, die dazu dient, die Adressen der Interrupt-Handler in die vorherige erstellte Sprungtabelle zu mappen.
 \lstinputlisting[language=C,firstline=1,lastline=14,caption={Interrupt-Handler}]{mops/mops-master/startup/arm_init.c} 
 Hier sieht man eindeutig wie an die Stellen \texttt{0x24 - 0x3c} die passenden Handler der Interrupts geschrieben werden. 
 \end{dinglist}
 \end{dinglist} 
 \section{Ger\"ate}
-Da die Konfiguration der Ger\"ate fast immer gleich ist wird im folgenden nur die Konfiguration des Timers gezeigt. \\
+Da die Konfiguration der Ger\"ate fast immer gleich ist, wird im Folgenden nur die Konfiguration des Timers gezeigt. \\
 F\"ur den Timer wurde sich aus dem Manuel\parencite[vgl. Tabelle 3-1][34]{timerRef} bedient und folgende Struktur entwickelt:
 \lstinputlisting[language=C,firstline=11,caption={Timer Struktur}]{mops/mops-master/include/devices/timer.h} 
-Diese Struktur wurde, \"uber das Linker-Script an eine vordefinierte Stelle gesetzt. Diese Adresse ist \texttt{0x101E2000}\parencite[vgl. Tabelle 4-72][262]{archManI}. Im Linker-Script ist dann direkt erkennbar das diese Adresse auf eine globale Variable, f\"ur den Timer, gemappt wurde.
+Diese Struktur wurde \"uber das Linker-Script an eine vordefinierte Stelle gesetzt. Diese Adresse ist: \texttt{0x101E2000}\parencite[vgl. Tabelle 4-72][262]{archManI}. Im Linker-Script ist dann direkt erkennbar, dass diese Adresse auf eine globale Variable f\"ur den Timer gemappt wurde.
 \lstinputlisting[language=C,firstline=56,lastline=57,caption={Linker Konfiguration des Timer}]{mops/mops-master/link.ld}
-Weiterhin wurden Funktionen entwickelt mit denen man den Timer initial  konfigurieren, Interrupts zur\"ucksetzen und den Scheduler anspringen, kann.
+Weiterhin wurden Funktionen entwickelt mit denen man den Timer initial  konfigurieren, Interrupts zur\"ucksetzen und den Scheduler anspringen kann.
 \lstinputlisting[language=C,firstline=10,caption={Konfigurationsmethoden des Timers}]{mops/mops-master/core/devices/timer.c}
-Die Funktion \texttt{init\_timer} wird von der \texttt{main}-Funktion aufgerufen um den Timer initial zu konfigurieren.
+Die Funktion \texttt{init\_timer} wird von der \texttt{main}-Funktion aufgerufen, um den Timer initial zu konfigurieren.
 \section{Interrupt-Controller}
-Nachdem alle Interrupthandler gemappt wurden startet eine neue Methode, die den Interrupt-Controller konfiguriert. Doch ehe man den Controller konfigurieren kann bedarf es eine Menge vorarbeit. Angefangen davon eine passende Struktur f\"ur den Controller zu erstellen. Auf Basis der Definition in \cite[35]{vic} kann man folgende Struktur definieren.
+Nachdem alle Interrupthandler gemappt wurden, startet eine neue Methode, die den Interrupt-Controller konfiguriert. Doch ehe man den Controller konfigurieren kann, bedarf es einer Menge Vorarbeit. Auf Basis der Definition in \cite[35]{vic} kann man folgende Struktur definieren.
 \lstinputlisting[language=C,firstline=24,lastline=48,caption={VIC}]{mops/mops-master/include/system/vic.h}
-Weiter geht es mit der Definition einer globalen Variable, der eine fixe Adresse(\texttt{0x10140000} \parencite[vgl. Tabelle 4-37][223]{archManI}) im RAM zugewiesen wird. Somit ist es m\"oglich dass die Struktur exakt auf die Stelle des VIC im ARM926EJ-S gemappt werden kann (Code-Beispiel \ref{imp:vicMapping}). 
+Weiter geht es mit der Definition einer globalen Variable, der eine fixe Adresse(\texttt{0x10140000} \parencite[vgl. Tabelle 4-37][223]{archManI}) im RAM zugewiesen wird. Somit ist es m\"oglich, dass die Struktur exakt auf die Stelle des VIC im ARM926EJ-S gemappt werden kann (Code-Beispiel \ref{imp:vicMapping}). 
 \lstinputlisting[language=C,label=imp:vicMapping,firstline=52,lastline=53,caption={VIC Mapping}]{mops/mops-master/link.ld}
-Jetzt sind alle Vorbedingungen geschaffen um den Controller zu konfigurieren. In der Abbildung \ref{draft:vicSample} des Entwurfs kann man erkennen welche Register man konfigurieren muss. Beispielhaft ist das in dem Code-Beispiel  \ref{impl:vicSample} zu erkennen.
+Jetzt sind alle Vorbedingungen geschaffen, um den Controller zu konfigurieren. In der Abbildung \ref{draft:vicSample} des Entwurfs kann man erkennen, welche Register man konfigurieren muss. Beispielhaft ist das in dem Code-Beispiel  \ref{impl:vicSample} zu erkennen.
 \lstinputlisting[language=C,label=impl:vicSample,firstline=29,lastline=46,caption={VIC Konfigurations Beispiel}]{mops/mops-master/core/devices/vic.c}
-Mit der f\"unften Zeile definiert man die Interrupt-Service Routine f\"ur den darauf folgenden Interrupt. In dem Controll-Register in Zeile sechs wird bestimmt welche Quelle der Interrupt hat und in Zeile acht wird der Timer-Interrupt als FIQ geschalten und abschlie\ss enden wird der Interrupt noch aktiviert.
+Mit der f\"unften Zeile definiert man die Interrupt-Service Routine f\"ur den darauf folgenden Interrupt. In dem Controll-Register in Zeile sechs wird bestimmt, welche Quelle der Interrupt hat und in Zeile acht wird der Timer-Interrupt als FIQ geschalten und abschlie\ss end wird der Interrupt noch aktiviert.
 \section{Interrupt Service Routinen}
 Neben dem Interrupt Controller ist es auch wichtig die passenden Interrupt-Service Routinen zu definieren. Beispielhaft soll hier die Service Routine f\"ur den \textit{UART0} Interrupt analysiert werden. 
 \lstinputlisting[language=C,firstline=1,lastline=16,caption={UART0 ISR}]{mops/mops-master/core/devices/uart.c}
-Sobald der Interrupt ausgel\"ost wurde wird die Methode ausgef\"uhrt. Nun sind ein paar wichtige Schritte notwendig um den Interrupt zu behandeln. Der erste Schritt ist, den Interrupt aus dem UART0 zu l\"oschen, danach muss der Interrupt im VIC gel\"oscht werden. Danach wird die Methode ausgef\"uhrt die den gedr\"uckten Buchstaben auf dem Monitor ausgibt.
-Nachdem das alles geschehen ist kann der Interrupt wieder aktiviert werden.\\
+Sobald der Interrupt ausgel\"ost wurde, wird die Methode ausgef\"uhrt. Nun sind ein paar wichtige Schritte notwendig, um den Interrupt zu behandeln. Der erste Schritt ist, den Interrupt aus dem UART0 zu l\"oschen. Danach muss der Interrupt im VIC gel\"oscht werden. Daraufhin wird die Methode ausgef\"uhrt, die den gedr\"uckten Buchstaben auf dem Monitor ausgibt.
+Nachdem das alles geschehen ist, kann der Interrupt wieder aktiviert werden.\\
 Die Vorgehensweise f\"ur neue Interrupt-Service Routinen ist grunds\"atzlich die gleiche wie hier beschrieben wurde. Als erstes sollte der Interrupt im Ger\"at und dann im VIC gel\"oscht werden. Danach kann man benutzerdefinierte Funktionen aufrufen.
 \section{Syscalls}
-Wie im Entwurf bereits angesprochen ist es notwendig User-Prozessen die M\"oglichkeit zu gew\"ahren auf Kernel-Methoden zuzugreifen. Um zu untermalen wie SWI`s behandelt werden, folgt ein Auszug aus dem Quellcode von \mops.
+Wie im Entwurf bereits angesprochen ist es notwendig, User-Prozessen die M\"oglichkeit zu gew\"ahren auf Kernel-Methoden zuzugreifen. Um zu untermalen wie SWI`s behandelt werden, folgt ein Auszug aus dem Quellcode von \mops.
 \lstinputlisting[language=C,caption={Software Interrupt Handler}]{mops/mops-master/core/syscalls/syscalls.c}
-Diese Routine wird von einem Handler aufgerufen der in Assembler geschrieben ist, die sogenannte \textit{ARM\_swi} Routine. Diese Routine ermittelt die Interruptnummer und schreibt sie in das Register R0 und ruft dann den C-Handler auf. Angekommen im C-Handler, kann nun aufgrund der SWI-Nummer entschieden werden welcher Handler aufgerufen wird. In dem Fall, dass eine 0 als SWI-Nummer durchgeroutet wird, wird der Handler f\"ur die Ausgabe auf der Konsole aufgerufen. Um einen weiteren Handler hinzuzuf\"ugen bedarf es au\ss erdem die SWI-Nummer in dem SWI-Handler einzutragen.
+Diese Routine wird von einem Handler aufgerufen, der in Assembler geschrieben ist, die - sogenannte \textit{ARM\_swi} Routine. Diese Routine ermittelt die Interruptnummer, schreibt sie in das Register R0 und ruft dann den C-Handler auf. Angekommen im C-Handler kann nun aufgrund der SWI-Nummer entschieden werden, welcher Handler aufgerufen wird. F\"ur den Fall, dass eine 0 als SWI-Nummer durchgeroutet wird, wird der Handler f\"ur die Ausgabe auf der Konsole aufgerufen. Um einen weiteren Handler hinzuzuf\"ugen, bedarf es au\ss erdem der SWI-Nummer in dem SWI-Handler einzutragen.
 
 \section{Threadmanagment}
-Das Threadmanagment stellte sich als gr\"o\ss te Herausforderung bei \mops heraus. Es musste ein Mechanismus entwickelt werden mit dem man aus ARM-Kompilierten C-Programmen den Assembler, f\"ur den Code-Abschnitt, extrahiert werden konnte. Nach dem kompilieren entstehen sogenannte .elf-Dateien, diese Dateien k\"onnen mit einer Bibliothek Namens libelf\footnote{\url{http://www.mr511.de/software/index.html} Letzter Zugriff 13.07.2013} von \textbf{mr511} geparst und bearbeitet werden. Leider unterst\"utzt diese Bibliothek keine ARM-Formate, und somit konnte die Bibliothek nicht benutzt werden.\\
-Es musste eine neue M\"oglichkeit entwickelt werden den Assemblercode aus der Output-Datei zu extrahieren.\\
-Um das zu bewerkstelligen wurde das Tool \texttt{arm-none-linux-gnueabi-objcopy}\ref{tools:copy} benutzt. Mit diesem Tool kann man bestimmte Abschnitte aus einer Output-Datei kopieren. Mit diesem Wissen konnte nun der Code-Abschnitt in bin\"ar in eine neue Datei kopiert werden. F\"ur folgendes Programm soll das einmal gezeigt werden.
+Das Threadmanagment stellte sich als gr\"o\ss te Herausforderung bei \mops heraus. Es musste ein Mechanismus entwickelt werden mit dem man aus ARM-Kompilierten C-Programmen den Assembler - f\"ur den Code-Abschnitt - sextrahiert kann. Nach dem Kompilieren entstehen sogenannte .elf-Dateien. Diese Dateien k\"onnen mit einer Bibliothek Namens libelf\footnote{\url{http://www.mr511.de/software/index.html} Letzter Zugriff 13.07.2013} von \textbf{mr511} geparst und bearbeitet werden. Leider unterst\"utzt diese Bibliothek keine ARM-Formate und somit konnte die Bibliothek nicht benutzt werden.\\
+Es musste eine neue M\"oglichkeit entwickelt werden , den Assemblercode aus der Output-Datei zu extrahieren.\\
+Um das zu bewerkstelligen, wurde das Tool \texttt{arm-none-linux-gnueabi-objcopy}\ref{tools:copy} benutzt. Mit diesem Tool kann man bestimmte Abschnitte aus einer Output-Datei kopieren. Mit diesem Wissen konnte nun der Code-Abschnitt im Bin\"arformat in eine neue Datei kopiert werden. F\"ur folgendes Programm soll das einmal gezeigt werden.
 \lstinputlisting[language=C,caption={Beispiel Programm}]{mops/mops-master/klaus.c}
-Dieses Programm ist relativ einfach gehalten, es bewegt den Wert 33, was in ASCII f\"ur das Ausrufezeichen '\texttt{!}' steht, in das Register 0 und ruft dann den Syscall 0 auf.
-Das oben genannte Tool kann nun wie folgt benutzt werden um eine bin\"are Kopie von dem Code-Abschnitt des Programms zu erstellen.
+Dieses Programm ist relativ einfach gehalten. Es bewegt den Wert 33, was in ASCII f\"ur das Ausrufezeichen '\texttt{!}' steht, in das Register 0 und ruft dann den Syscall 0 auf.
+Das oben genannte Tool kann nun wie folgt benutzt werden, um eine bin\"are Kopie von dem Code-Abschnitt des Programms zu erstellen.
 \begin{lstlisting}
 arm-none-linux-gnueabi-objcopy -O binary -S klaus.c klaus.bin
 \end{lstlisting}
 Schaut man sich nun die Datei im Hex-Editor an, so erh\"alt man folgende Ausgabe:
 \lstinputlisting[language=C,caption={Bin\"ar Kopie vom Beispielprogramm}]{mops/mops-master/klaus.bin.hex}
-Diese Hex-Codes sind f\"ur \mops relevant, denn diese Codes sind exakt die Assembler-Codes die der Assembler generiert. Da es auf dauer sehr umfangreich gewurden w\"are diese Codes per Hand rauszuschreiben musste, also ein Weg entwickelt werden um dies automatisiert zu machen.
+Diese Hex-Codes sind f\"ur \mops relevant, denn diese Codes sind exakt die Assembler-Codes, die der Assembler generiert. Da es auf Dauer sehr umfangreich geworden w\"are diese Codes per Hand herauszuschreiben, musste also ein Weg entwickelt werden, um dies automatisiert zu machen.
 \subsection{RAM-Disk}
-Die RAM-Disk ist der Ausgangspunkt der Prozesse in \mops. Sie wird nach Start des Systems in den Kernel-Heap geladen und ab da k\"onnen die Threads im System hochgefahren werden. Jedoch stellte sich die Frage wie man diese RAM-Disk erstellt. Zuvor wurde gekl\"art wie man an den Assembler-Code jedes Prozesse ran kommt. Nun muss dieser Code auch noch in einem f\"ur \mops passenden Format geschrieben werden. Dazu wurde ein Programm definiert was die bin\"ar Dateien einliest und daraus eine Header-Datei und passende C-Datei erzeugt. Ein Beispiel f\"ur so eine Header und C-Datei kann wie folgt aussehen:
+Die RAM-Disk ist der Ausgangspunkt der Prozesse in \mops. Sie wird nach Start des Systems in den Kernel-Heap geladen und von da an k\"onnen die Threads im System hochgefahren werden. Jedoch stellte sich die Frage, wie man diese RAM-Disk erstellt. Zuvor wurde gekl\"art, wie man an den Assembler-Code eines jeden Prozesses herankommt. Nun muss dieser Code auch noch in einem f\"ur \mops passenden Format geschrieben werden. Dazu wurde ein Programm definiert, was die Bin\"ardateien einliest und daraus eine Header-Datei und passende C-Datei erzeugt. Ein Beispiel f\"ur so eine Header- und C-Datei kann wie folgt aussehen:
 \lstinputlisting[language=C,caption={RAM-Disk Headerdatei}]{mops/mops-master/ramdisk.h}
-\newpage
 \lstinputlisting[language=C,caption={RAM-Disk C-Datei}]{mops/mops-master/ramdisk.c}
 Die Struktur f\"ur jeden Thread in der RAM-Disk ist die folgende:
 $$Prozess = x-Bytes\;Code + 1\;Byte\;Stack$$
-Um die unterschiedlichen Threads voneiander abgrenzen zu k\"onnen existiert noch ein Descriptoren-Array, was die L\"angen eines jeden Threads definiert. In dem Code-Beispiel bedeutet das, dass der erste Thread in den ersten 7 Stellen der RAM-Disk lokalisiert ist, dann kommt 1 Byte f\"ur den Stack und dann f\"angt der zweite Thread an. Mit diesem Schema ist es m\"oglich soviele Threads wie gewollt in \mops zu laden und diese seperat zu identifizieren. F\"ur genauere Informationen wie der ramdiskMaker funktioniert, bitte im Anhang \ref{appendix:ramdiskMaker} nachlesen.
+Um die unterschiedlichen Threads voneinander abgrenzen zu k\"onnen, existiert noch ein Descriptoren-Array, was die L\"angen eines jeden Threads definiert. In dem Code-Beispiel bedeutet das, dass der erste Thread in den ersten 7 Stellen der RAM-Disk lokalisiert ist, dann kommt 1 Byte f\"ur den Stack und daraufhin beginnt der zweite Thread. Mit diesem Schema ist es m\"oglich soviele Threads wie gewollt in \mops zu laden und diese seperat zu identifizieren. Um genauere Informationen zu erhalten, wie der \texttt{ramdiskMaker} funktioniert, kann im Anhang \ref{appendix:ramdiskMaker} nachgelesen werden.
 \subsection{\mops Loader}
-Neben des Mechanismus das passende Format f\"ur die RAM-Disk zu erstellen ist es weiterhin notwendig das geschriebene Format auch korrekt einzulesen und zu verarbeiten. Hier kommt der \textit{Loader} von \mops ins Spiel. Der Name scheint im ersten Moment etwas verwirrend da er nicht wirklich das widerspiegelt was ein echter Loader macht, aber die Begrifflichkeit ist f\"ur das was er tut dennoch passend. 
+Neben des Mechanismuses, das passende Format f\"ur die RAM-Disk zu erstellen, ist es weiterhin notwendig, das geschriebene Format auch korrekt einzulesen und zu verarbeiten. Hier kommt der \textit{Loader} von \mops in das Spiel. Der Name scheint im ersten Moment etwas verwirrend, da er nicht wirklich das widerspiegelt, was ein echter Loader macht, aber die Begrifflichkeit ist f\"ur das, was er tut, dennoch passend. 
 \lstinputlisting[language=C, caption={\mops Loader}]{mops/mops-master/core/mops_loader.c}
-Hier wird dieselbe Technik angewendet wie beim erstellen der Sprungtabelle. Es wird sich auf eine externe Variable \texttt{\_\_k\_heap\_start} bezogen um den Einstiegspunkt in den Kernel-Heap zu finden. Danach wird \"uber das \texttt{imageDescriptor} Array herausgefunden wieviele Bytes kopiert werden m\"ussen. Das kopieren ist dann ein sehr einfacher Mechanismus: Es wird ausschlie\ss lich der Zeiger auf den Kernel-Heap dereferenziert und der Wert aus der \texttt{ramdisk} reingeschrieben (siehe Zeile 22). Der Stack wird sehr einfach initialisiert, indem einfach nur der Wert \texttt{0x0} so oft reingeschrieben wird wie es in der RAM-Disk definiert wurde. Ist das getan muss noch der neue Start-Wert des Kernel-Heaps umgesetzt werden damit weitere Prozesse in den Heap geschrieben werden k\"onnen (siehe Zeile 33-34).
+Hier wird dieselbe Technik angewendet wie beim Erstellen der Sprungtabelle. Es wird sich auf eine externe Variable \texttt{\_\_k\_heap\_start} bezogen, um den Einstiegspunkt in den Kernel-Heap zu finden. Danach wird \"uber das \texttt{imageDescriptor} Array herausgefunden , wieviele Bytes kopiert werden m\"ussen. Das Kopieren ist dann ein sehr einfacher Mechanismus: Es wird ausschlie\ss lich der Zeiger auf den Kernel-Heap dereferenziert und der Wert aus der \texttt{ramdisk} reingeschrieben (siehe Zeile 22). Der Stack wird sehr einfach initialisiert, indem einfach nur der Wert \texttt{0x0} so oft herreingeschrieben wird, wie es in der RAM-Disk definiert wurde. Ist das getan, muss noch der neue Start-Wert des Kernel-Heaps umgesetzt werden, damit weitere Prozesse in den Heap geschrieben werden k\"onnen (siehe Zeile 33-34).
 \subsection{Threadlayout}
-Nachdem der Thread erfolgreich in den RAM geladen wurde war es an der Zeit das Threadlayout des Threads zu definieren. Als Vorlage daf\"ur diente das Threadlayout von Dr. Prof. Burkhard Messer der HTW-Berlin. Er beschrieb in seinen Folien, f\"ur die Vorlesung \textit{Betriebssysteme} und dem Thema \textit{Threads-1}, ein Layout\footnote{\url{http://wi.f4.htw-berlin.de/users/messer/LV/AI-BS-SS13/index.html} Letzter Besuch 13.07.2013} das bei \mops \"ubernommen wurde. Der Entwurf f\"ur die \textbf{erste} Version sieht wie folgt aus:
+Nachdem der Thread erfolgreich in den RAM geladen wurde, war es an der Zeit das Threadlayout des Threads zu definieren. Als Vorlage daf\"ur diente das Threadlayout von Dr. Prof. Burkhard Messer der HTW-Berlin. Er beschrieb in seinen Folien f\"ur die Vorlesung \textit{Betriebssysteme} und dem Thema \textit{Threads-1} ein Layout\footnote{\url{http://wi.f4.htw-berlin.de/users/messer/LV/AI-BS-SS13/index.html} Letzter Besuch 13.07.2013}, das bei \mops \"ubernommen wurde. Der Entwurf f\"ur die \textbf{erste} Version sieht wie folgt aus:
 \lstinputlisting[language=C,firstline=1, lastline=14, caption={Threadlayout}]{common/thread.h}
-Mit diesem Entwurf konnte nun ein rudiment\"arer Thread erzeugt werden. Hierzu musste die Start-Adresse, End-Adresse, Stackpointer und der Programmcounter gesetzt werden. Das war die Aufgabe der Methode die das Threadlayout erzeugt. Folgende Methode erf\"ullt genau diese Aufgabe:
+Mit diesem Entwurf konnte nun ein rudiment\"arer Thread erzeugt werden. Hierzu musste die Start-Adresse, End-Adresse, Stackpointer und der Programmcounter gesetzt werden. Das war die Aufgabe der Methode, die das Threadlayout erzeugt. Folgende Methode erf\"ullt genau diese Aufgabe:
 \lstinputlisting[language=C, caption={Threadlayout erstellen}]{common/thread.c}
-Neben der Aufgabe dem Thread die passenden Start-, End-, Stackpointer- und Programmconuterwerte zuzuweisen, f\"ugt die Methode zudem noch den Thread in eine globale Tabelle ein. In den Zeilen 26-29 kann man erkennen wie die Adressen zugewiesen werden.
+Neben der Aufgabe dem Thread die passenden Start-, End-, Stackpointer- und Programmconuterwerte zuzuweisen, f\"ugt die Methode zudem noch den Thread in eine globale Tabelle ein. In den Zeilen 26-29 kann man erkennen, wie die Adressen zugewiesen werden.
 \subsection{Thread Generierung}
-All diese Schritte sind notwendig um einen Thread zu generieren. Der n\"achste logische Schritt ist jetzt den Thread ins Leben zu rufen. Das geschieht in der \textbf{ersten} Version \"uber folgende Assembler-Routine:
+All diese Schritte sind notwendig, um einen Thread zu generieren. Der n\"achste logische Schritt ist jetzt den Thread in das Leben zu rufen. Das geschieht in der \textbf{ersten} Version \"uber folgende Assembler-Routine:
 \lstinputlisting[language={[x86masm]Assembler}, caption={Thread Generierung}]{common/mops_resume.s}
-Diese Methode bekommt die Adresse des zu startenden Thread \"ubergeben und macht dann eine Reihe wichtiger Sachen:
+Diese Methode erh\"ahlt die Adresse des zu startenden Thread und f\"uhrt dann eine Reihe wichtiger Sachen durch:
 \begin{enumerate}
 	\item{Stackpointer des aktuellen Modus retten (Z. 9)}
 	\item{Stackpointer des neuen Threads laden (Z. 11)}
-	\item{Alle Register auf den Stack des Prozess retten (Z. 12-13)}
-	\item{Die Startadresse es Programms laden (Z. 16)}
+	\item{Alle Register auf den Stack des Prozesses retten (Z. 12-13)}
+	\item{Die Startadresse des Programms laden (Z. 16)}
 	\item{In den Prozess springen (Z. 18)}
-	\item{Alle Register wieder herstellen und an den Aufrufer zur\"uckkehren (Z. 24-26)}	
+	\item{Alle Register wiederherstellen und an den Aufrufer zur\"uckkehren (Z. 24-26)}	
 \end{enumerate}
 Dieses Schema wird f\"ur jeden neuen Thread durchgef\"uhrt.
